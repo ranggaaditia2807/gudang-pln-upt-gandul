@@ -5,27 +5,27 @@ const AppConfig = {
     
     // Module paths
     modules: {
-        home: '../home/index.html',
-        dashboard: '../dashboard/index.html',
-        transaksi: '../transaksi/index.html',
-        manajemenGudang: '../manajemen gudang/index.html',
-        laporan: '../laporan/index.html'
+        home: 'home.html',
+        dashboard: 'dashboard.html',
+        transaksi: 'transaksi.html',
+        manajemenGudang: 'manajemen-gudang.html',
+        laporan: 'laporan.html'
     },
     
     // API endpoints
     api: {
         transaksi: {
-            pemasukan: '../transaksi/data-integration.js',
-            pengeluaran: '../transaksi/data-integration.js',
-            list: '../transaksi/data-integration.js'
+            pemasukan: 'data-integration.js',
+            pengeluaran: 'data-integration.js',
+            list: 'data-integration.js'
         },
         laporan: {
-            generate: '../laporan/data-integration.js',
-            export: '../laporan/data-integration.js'
+            generate: 'data-integration.js',
+            export: 'data-integration.js'
         },
         dashboard: {
-            summary: '../dashboard/dashboard.js',
-            alerts: '../dashboard/dashboard.js'
+            summary: 'dashboard.js',
+            alerts: 'dashboard.js'
         }
     },
     
@@ -99,3 +99,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
