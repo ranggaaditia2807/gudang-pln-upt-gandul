@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gudang PLN UPT Gandul</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ====== RESET & BASE ====== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f4f7fb;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #004080;
+      color: #fff;
+      padding: 1rem 2rem;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: bold;
+    }
+
+    nav {
+      background: #0066cc;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      padding: 0.8rem 1rem;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #ffdd57;
+    }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .card {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    }
+
+    .card h2 {
+      margin-bottom: 1rem;
+      color: #004080;
+    }
+
+    footer {
+      text-align: center;
+      background: #004080;
+      color: #fff;
+      padding: 1rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Gudang PLN UPT Gandul</h1>
+    <p>Manajemen Persediaan Barang & Transaksi</p>
+  </header>
+
+  <nav>
+    <a href="home/index.html">Home</a>
+    <a href="dashboard/index.html">Dashboard</a>
+    <a href="laporan/index.html">Laporan</a>
+    <a href="manajemen-gudang/index.html">Manajemen Gudang</a>
+    <a href="transaksi/index.html">Transaksi</a>
+  </nav>
+
+  <main>
+    <div class="card">
+      <h2>Home</h2>
+      <p>Halaman utama aplikasi gudang.</p>
+      <a href="home/index.html">Buka</a>
+    </div>
+    <div class="card">
+      <h2>Dashboard</h2>
+      <p>Ringkasan data persediaan barang.</p>
+      <a href="dashboard/index.html">Buka</a>
+    </div>
+    <div class="card">
+      <h2>Laporan</h2>
+      <p>Rekap laporan keluar masuk barang.</p>
+      <a href="laporan/index.html">Buka</a>
+    </div>
+    <div class="card">
+      <h2>Manajemen Gudang</h2>
+      <p>Atur stok, kategori, & lokasi barang.</p>
+      <a href="manajemen-gudang/index.html">Buka</a>
+    </div>
+    <div class="card">
+      <h2>Transaksi</h2>
+      <p>Catat pemasukan & pengeluaran barang.</p>
+      <a href="transaksi/index.html">Buka</a>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Gudang PLN UPT Gandul
+  </footer>
+</body>
+</html>
