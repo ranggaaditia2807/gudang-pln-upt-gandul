@@ -262,10 +262,9 @@
         </div>
     </div>
 
-    <script src="../shared/data-config.js"></script>
     <script>
-        // Data barang dari konfigurasi terpusat
-        let barang = DataConfig.getDataBarang();
+        // Data barang dari localStorage
+        let barang = JSON.parse(localStorage.getItem('dataBarang')) || [];
 
         // Fungsi untuk menampilkan data barang
         function renderBarang() {
@@ -351,7 +350,8 @@
                 barang.push({ kode, nama, stok, satuan, lokasi });
             }
 
-            DataConfig.saveDataBarang(barang);
+            // Simpan data barang ke localStorage
+            localStorage.setItem('dataBarang', JSON.stringify(barang));
             renderBarang();
             closeModal('tambah');
         });
@@ -372,19 +372,14 @@
         // Fungsi untuk hapus barang
         function hapusBarang(kode) {
             barang = barang.filter(b => b.kode !== kode);
-            DataConfig.saveDataBarang(barang);
+            localStorage.setItem('dataBarang', JSON.stringify(barang));
             renderBarang();
         }
 
         // Inisialisasi pertama kali
         document.addEventListener('DOMContentLoaded', function() {
-            // Sinkronisasi stok saat halaman dimuat
-            DataConfig.sinkronisasiStok();
-            barang = DataConfig.getDataBarang();
             renderBarang();
         });
     </script>
 </body>
 </html>
-
-
