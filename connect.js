@@ -3,11 +3,11 @@
 // Fungsi untuk navigasi antar modul
 function navigateTo(module) {
     const paths = {
-        'home': '../home/index.html',
-        'dashboard': '../dashboard/index.html',
-        'transaksi': '../transaksi/index.html',
-        'manajemen': '../manajemen gudang/index.html',
-        'laporan': '../laporan/index.html'
+        'home': 'index.html',
+        'dashboard':'dashboard.html',
+        'transaksi': 'transaksi.html',
+        'manajemen': 'manajemen-gudang.html',
+        'laporan': 'laporan.html'
     };
     
     if (paths[module]) {
@@ -36,11 +36,11 @@ function addNavigation() {
             <div style="max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
                 <h2 style="color: white; margin: 0;">Gudang UPT Gandul 3</h2>
                 <ul style="display: flex; list-style: none; gap: 20px; margin: 0;">
-                    <li><a href="../home/index.html" style="color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px;">Beranda</a></li>
-                    <li><a href="../dashboard/index.html" style="color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px;">Dashboard</a></li>
-                    <li><a href="../transaksi/index.html" style="color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px;">Transaksi</a></li>
-                    <li><a href="../manajemen gudang/index.html" style="color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px;">Manajemen Gudang</a></li>
-                    <li><a href="../laporan/index.html" style="color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px;">Laporan</a></li>
+                    <li><a href="index.html" style="color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px;">Beranda</a></li>
+                    <li><a href="index.html" style="color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px;">Dashboard</a></li>
+                    <li><a href="index.html" style="color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px;">Transaksi</a></li>
+                    <li><a href="manajemen gudang/index.html" style="color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px;">Manajemen Gudang</a></li>
+                    <li><a href="laporan/index.html" style="color: white; text-decoration: none; padding: 8px 15px; border-radius: 4px;">Laporan</a></li>
                 </ul>
             </div>
         </nav>
@@ -181,3 +181,4 @@ window.GudangSystem = {
     shareData: shareData,
     updateDashboard: updateDashboardFromTransaction
 };
+
