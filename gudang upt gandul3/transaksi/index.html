@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index Transaksi - Gudang UPT Gandul</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Gudang UPT Gandul</div>
+        <nav class="nav-links">
+            <a href="../home/index.html">Home</a>    
+            <a href="../dashboard/index.html">Dashboard</a>
+            <a href="../manajemen gudang/index.html">Manajemen Gudang</a>
+            <a href="../laporan/index.html">Laporan</a>
+        </nav>
+    </div>
+
+    <div class="dashboard-content">
+        <h1 style="text-align:center; margin-bottom:30px; color:#005baa;">
+            <i class="fas fa-exchange-alt"></i> Index Transaksi
+        </h1>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <div class="action-card" onclick="window.location.href='pemasukan-barang.html'">
+                <i class="fas fa-download"></i>
+                <h3>Pemasukan Barang</h3>
+                <p>Catat barang masuk ke gudang</p>
+            </div>
+            <div class="action-card" onclick="window.location.href='pengeluaran-barang.html'">
+                <i class="fas fa-upload"></i>
+                <h3>Pengeluaran Barang</h3>
+                <p>Catat barang keluar dari gudang</p>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <i class="fas fa-download"></i>
+                <h2 id="totalPemasukanHariIni">0</h2>
+                <p>Pemasukan Hari Ini</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-upload"></i>
+                <h2 id="totalPengeluaranHariIni">0</h2>
+                <p>Pengeluaran Hari Ini</p>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-boxes"></i>
+                <h2 id="totalBarang">0</h2>
+                <p>Total Barang</p>
+            </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="recent-transactions">
+            <h2 style="color:#005baa; margin-bottom:20px;">Transaksi Terbaru</h2>
+            <div class="transaction-tabs">
+                <button class="tab-button active" onclick="showTab('pemasukan')">Pemasukan</button>
+                <button class="tab-button" onclick="showTab('pengeluaran')">Pengeluaran</button>
+            </div>
+            
+            <div id="pemasukan-tab" class="tab-content">
+                <table class="transaction-table">
+                    <thead>
+                        <tr>
+                            <th>No. Transaksi</th>
+                            <th>Tanggal</th>
+                            <th>Supplier</th>
+                            <th>Jumlah Item</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-pemasukan">
+                        <!-- Data akan diisi oleh JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="pengeluaran-tab" class="tab-content" style="display:none;">
+                <table class="transaction-table">
+                    <thead>
+                        <tr>
+                            <th>No. Transaksi</th>
+                            <th>Tanggal</th>
+                            <th>Tujuan</th>
+                            <th>Jumlah Item</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-pengeluaran">
+                        <!-- Data akan diisi oleh JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="../shared/data-config.js"></script>
+    <script>
+        // Inisialisasi
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRecentTransactions();
+            loadSummaryData();
+        });
+
+        function loadRecentTransactions() {
+            const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
+            const transaksiPengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
+
+            // Load recent pemasukan
+            const recentPemasukan = transaksiPemasukan.slice(-5).reverse();
+            const pemasukanTbody = document.getElementById('recent-pemasukan');
+            pemasukanTbody.innerHTML = '';
+
+            recentPemasukan.forEach(transaksi => {
+                const totalItem = transaksi.barang ? transaksi.barang.length : 0;
+                const noTransaksi = transaksi.noTransaksi || transaksi.noTransaksiMasuk;
+                
+                const row = pemasukanTbody.insertRow();
+                row.innerHTML = `
+                    <td>${noTransaksi}</td>
+                    <td>${transaksi.tanggalMasuk}</td>
+                    <td>${transaksi.supplier}</td>
+                    <td>${totalItem} item</td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="viewDetail('${noTransaksi}', 'pemasukan')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+            });
+
+            // Load recent pengeluaran
+            const recentPengeluaran = transaksiPengeluaran.slice(-5).reverse();
+            const pengeluaranTbody = document.getElementById('recent-pengeluaran');
+            pengeluaranTbody.innerHTML = '';
+
+            recentPengeluaran.forEach(transaksi => {
+                const totalItem = transaksi.barang ? transaksi.barang.length : 0;
+                
+                const row = pengeluaranTbody.insertRow();
+                row.innerHTML = `
+                    <td>${transaksi.noTransaksiKeluar}</td>
+                    <td>${transaksi.tanggalKeluar}</td>
+                    <td>${transaksi.tujuan}</td>
+                    <td>${totalItem} item</td>
+                    <td>
+                        <button class="btn btn-sm btn-info" onclick="viewDetail('${transaksi.noTransaksiKeluar}', 'pengeluaran')">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </td>
+                `;
+            });
+        }
+
+        function loadSummaryData() {
+            const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
+            const transaksiPengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
+            const today = new Date().toISOString().split('T')[0];
+
+            // Hitung pemasukan hari ini
+            const pemasukanHariIni = transaksiPemasukan.filter(t => t.tanggalMasuk === today).length;
+            document.getElementById('totalPemasukanHariIni').textContent = pemasukanHariIni;
+
+            // Hitung pengeluaran hari ini
+            const pengeluaranHariIni = transaksiPengeluaran.filter(t => t.tanggalKeluar === today).length;
+            document.getElementById('totalPengeluaranHariIni').textContent = pengeluaranHariIni;
+
+            // Total barang
+            document.getElementById('totalBarang').textContent = transaksiPemasukan.length + transaksiPengeluaran.length; // Menghitung total barang dari pemasukan dan pengeluaran
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        function viewDetail(noTransaksi, type) {
+            const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
+            const transaksiPengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
+            
+            let transaksi;
+            if (type === 'pemasukan') {
+                // Cari transaksi dengan kedua kemungkinan field name
+                transaksi = transaksiPemasukan.find(t => 
+                    t.noTransaksi === noTransaksi || t.noTransaksiMasuk === noTransaksi
+                );
+            } else {
+                transaksi = transaksiPengeluaran.find(t => t.noTransaksiKeluar === noTransaksi);
+            }
+
+            if (transaksi) {
+                let detail = `Detail Transaksi ${type.charAt(0).toUpperCase() + type.slice(1)}\n\n`;
+                detail += `No. Transaksi: ${transaksi.noTransaksi || transaksi.noTransaksiMasuk || transaksi.noTransaksiKeluar}\n`;
+                detail += `Tanggal: ${transaksi.tanggalMasuk || transaksi.tanggalKeluar}\n`;
+                detail += `${type === 'pemasukan' ? 'Supplier' : 'Tujuan'}: ${transaksi.supplier || transaksi.tujuan}\n`;
+                detail += `Keterangan: ${transaksi.keterangan || 'Tidak ada keterangan'}\n\n`;
+                detail += 'Detail Barang:\n';
+                
+                if (transaksi.barang && Array.isArray(transaksi.barang)) {
+                    transaksi.barang.forEach(b => {
+                        detail += `- Kode: ${b.kodeBarang || 'Tidak ada kode'}, Nama: ${b.namaBarang || 'Tidak ada nama'}, Jumlah: ${b.jumlahMasuk || b.jumlahKeluar || 'Tidak ada jumlah'}\n`;
+                    });
+                }
+                
+                alert(detail);
+            } else {
+                alert('Transaksi tidak ditemukan.');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pengeluaran Barang - Gudang UPT Gandul</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Gudang UPT Gandul</div>
+        <nav class="nav-links">
+            <a href="../home/index.html">Home</a>
+            <a href="../dashboard/index.html">Dashboard</a>
+            <a href="../manajemen gudang/index.html">Manajemen Gudang</a>
+            <a href="index.html">Laporan Transaksi</a>
+        </nav>
+        <div class="user-profile">
+            <i class="fas fa-user-circle"></i>
+            <span>Admin</span>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <h1 style="text-align:center; margin-bottom:30px; color:#005baa;">
+            <i class="fas fa-upload"></i> Pengeluaran Barang
+        </h1>
+
+        <div class="form-container">
+            <h2>Form Pengeluaran Barang</h2>
+            <form id="formPengeluaran">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="noTransaksiKeluar">No. Transaksi</label>
+                        <input type="text" id="noTransaksiKeluar" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="tanggalKeluar">Tanggal Keluar</label>
+                        <input type="date" id="tanggalKeluar" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tujuan">Tujuan Pengeluaran</label>
+                        <input type="text" id="tujuan" class="form-control" required placeholder="Nama Tujuan/Departemen">
+                    </div>
+                    <div class="form-group">
+                        <label for="noPermintaan">No. Permintaan</label>
+                        <input type="text" id="noPermintaan" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="keteranganKeluar">Keterangan</label>
+                        <textarea id="keteranganKeluar" class="form-control" rows="2" placeholder="Catatan tambahan..."></textarea>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px; color:#005baa;">Detail Barang Keluar</h3>
+                <div id="barang-keluar-container">
+                    <!-- Barang items will be added here -->
+                </div>
+
+                <button type="button" class="btn btn-secondary" onclick="tambahBarangKeluar()">
+                    <i class="fas fa-plus"></i> Tambah Barang
+                </button>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Simpan Transaksi
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="batal()">
+                        <i class="fas fa-times"></i> Batal
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../shared/data-config.js"></script>
+    <script>
+        let barangKeluarCounter = 0;
+
+        // Inisialisasi
+        document.addEventListener('DOMContentLoaded', function() {
+            generateNoTransaksiKeluar();
+            setTanggalHariIni();
+            loadBarangOptions();
+            tambahBarangKeluar(); // Tambah satu barang default
+            sinkronisasiData();
+        });
+
+        function sinkronisasiData() {
+            // Sinkronisasi stok dengan data terbaru
+            DataConfig.sinkronisasiStok();
+            loadBarangOptions();
+        }
+
+        function generateNoTransaksiKeluar() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            document.getElementById('noTransaksiKeluar').value = `KLR${year}${month}${day}${random}`;
+        }
+
+        function setTanggalHariIni() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tanggalKeluar').value = today;
+        }
+
+        function loadBarangOptions() {
+            const barang = DataConfig.getDataBarang();
+            window.barangData = barang;
+            updateBarangDropdowns();
+        }
+
+        function updateBarangDropdowns() {
+            // Update semua dropdown yang sudah ada
+            const dropdowns = document.querySelectorAll('.kode-barang-keluar');
+            dropdowns.forEach(dropdown => {
+                const currentValue = dropdown.value;
+                dropdown.innerHTML = '<option value="">Pilih Barang</option>';
+                
+                window.barangData.forEach(b => {
+                    const option = document.createElement('option');
+                    option.value = b.kode;
+                    option.textContent = `${b.kode} - ${b.nama} (Stok: ${b.stok} ${b.satuan})`;
+                    option.dataset.nama = b.nama;
+                    option.dataset.stok = b.stok;
+                    option.dataset.satuan = b.satuan;
+                    dropdown.appendChild(option);
+                });
+                
+                dropdown.value = currentValue;
+            });
+        }
+
+        function tambahBarangKeluar() {
+            barangKeluarCounter++;
+            const container = document.getElementById('barang-keluar-container');
+            const barangDiv = document.createElement('div');
+            barangDiv.className = 'barang-item';
+            barangDiv.id = `barang-keluar-${barangKeluarCounter}`;
+            
+            barangDiv.innerHTML = `
+                <div class="barang-header">
+                    <h4>Barang ${barangKeluarCounter}</h4>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="hapusBarangKeluar(${barangKeluarCounter})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Kode Barang</label>
+                        <select class="form-control kode-barang-keluar" onchange="updateNamaBarangKeluar(this)" required>
+                            <option value="">Pilih Barang</option>
+                            ${window.barangData.map(b => `<option value="${b.kode}" data-nama="${b.nama}" data-stok="${b.stok}" data-satuan="${b.satuan}">${b.kode} - ${b.nama} (Stok: ${b.stok} ${b.satuan})</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Barang</label>
+                        <input type="text" class="form-control nama-barang-keluar" readonly>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Jumlah Keluar</label>
+                        <input type="number" class="form-control jumlah-keluar" min="1" onchange="validasiStok(this)" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Stok Tersedia</label>
+                        <input type="number" class="form-control stok-tersedia" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Satuan</label>
+                        <input type="text" class="form-control satuan" readonly>
+                    </div>
+                </div>
+            `;
+            
+            container.appendChild(barangDiv);
+        }
+
+        function updateNamaBarangKeluar(select) {
+            const barangItem = select.closest('.barang-item');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            const namaBarang = selectedOption.dataset.nama || '';
+            const stok = selectedOption.dataset.stok || '0';
+            const satuan = selectedOption.dataset.satuan || '';
+            
+            barangItem.querySelector('.nama-barang-keluar').value = namaBarang;
+            barangItem.querySelector('.stok-tersedia').value = stok;
+            barangItem.querySelector('.satuan').value = satuan;
+        }
+
+        function validasiStok(input) {
+            const barangItem = input.closest('.barang-item');
+            const jumlahKeluar = parseInt(input.value) || 0;
+            const stokTersedia = parseInt(barangItem.querySelector('.stok-tersedia').value) || 0;
+
+            if (jumlahKeluar > stokTersedia) {
+                alert(`Stok tidak mencukupi! Stok tersedia: ${stokTersedia}`);
+                input.value = Math.max(0, stokTersedia); // Reset ke stok tersedia atau 0
+                return false;
+            }
+
+            if (jumlahKeluar <= 0) {
+                alert('Jumlah keluar harus lebih dari 0!');
+                input.value = 1;
+                return false;
+            }
+
+            return true;
+        }
+
+        function hapusBarangKeluar(id) {
+            const barangDiv = document.getElementById(`barang-keluar-${id}`);
+            if (barangDiv) {
+                barangDiv.remove();
+            }
+        }
+
+        document.getElementById('formPengeluaran').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                noTransaksiKeluar: document.getElementById('noTransaksiKeluar').value,
+                tanggalKeluar: document.getElementById('tanggalKeluar').value,
+                tujuan: document.getElementById('tujuan').value,
+                noPermintaan: document.getElementById('noPermintaan').value,
+                keterangan: document.getElementById('keteranganKeluar').value,
+                barang: []
+            };
+
+            // Ambil data barang keluar
+            const barangItems = document.querySelectorAll('.barang-item');
+            let isValid = true;
+            let hasData = false;
+
+            barangItems.forEach(item => {
+                const kodeBarang = item.querySelector('.kode-barang-keluar').value;
+                const jumlahKeluar = parseInt(item.querySelector('.jumlah-keluar').value);
+                const stokTersedia = parseInt(item.querySelector('.stok-tersedia').value);
+                const namaBarang = item.querySelector('.nama-barang-keluar').value;
+
+                if (!kodeBarang || !jumlahKeluar || !namaBarang) {
+                    if (kodeBarang || jumlahKeluar || namaBarang) {
+                        isValid = false;
+                    }
+                    return;
+                }
+
+                hasData = true;
+
+                if (jumlahKeluar > stokTersedia) {
+                    alert(`Stok tidak mencukupi untuk barang ${kodeBarang} (${namaBarang})`);
+                    isValid = false;
+                    return;
+                }
+
+                if (jumlahKeluar <= 0) {
+                    alert('Jumlah keluar harus lebih dari 0!');
+                    isValid = false;
+                    return;
+                }
+
+                formData.barang.push({
+                    kodeBarang,
+                    jumlahKeluar,
+                    namaBarang
+                });
+
+                // Update stok barang
+                const updateSuccess = DataConfig.updateStokBarang(kodeBarang, jumlahKeluar, 'pengeluaran');
+                if (!updateSuccess) {
+                    alert(`Gagal mengupdate stok untuk barang ${kodeBarang}`);
+                    isValid = false;
+                }
+            });
+
+            if (!hasData) {
+                alert('Mohon tambahkan minimal satu barang untuk dikeluarkan!');
+                return;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            // Simpan transaksi
+            const transaksiPengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
+            transaksiPengeluaran.push(formData);
+            localStorage.setItem('transaksiPengeluaran', JSON.stringify(transaksiPengeluaran));
+
+            // Sinkronisasi ulang data
+            DataConfig.sinkronisasiStok();
+
+            alert('Transaksi pengeluaran berhasil disimpan!');
+            window.location.href = 'index.html';
+        });
+
+                function batal() {
+            // Mengonfirmasi tindakan batal
+            if (confirm('Apakah Anda yakin ingin membatalkan pengeluaran barang?')) {
+                // Mengosongkan form
+                document.getElementById('formPengeluaran').reset();
+                // Menghapus semua barang yang ditambahkan
+                const container = document.getElementById('barang-keluar-container');
+                container.innerHTML = '';
+                barangKeluarCounter = 0;
+                // Menghasilkan nomor transaksi baru
+                generateNoTransaksiKeluar();
+                setTanggalHariIni();
+                tambahBarangKeluar(); // Tambah satu barang default
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+
+            
