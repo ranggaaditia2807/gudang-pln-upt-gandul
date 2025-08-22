@@ -17,7 +17,7 @@ Sistem manajemen gudang untuk PT PLN yang memungkinkan pengelolaan barang dan tr
 ## Cara Penggunaan
 
 ### Memulai
-1. Buka file `dashboard/index.html` di browser
+1. Buka file `dashboard.html` di browser
 2. Sistem akan otomatis menginisialisasi data awal
 3. Mulai tambahkan barang dan transaksi
 
@@ -98,27 +98,6 @@ Sistem manajemen gudang untuk PT PLN yang memungkinkan pengelolaan barang dan tr
     satuan: "unit"
   }]
 }
-```
-
-## File Struktur
-
-```
-gudang-upt-gandul3/
-├── dashboard/
-│   ├── index.html      # Halaman utama dashboard
-│   └── dashboard.js    # JavaScript untuk fungsionalitas
-├── transaksi/
-│   ├── data-integration.js  # Sistem integrasi data
-│   ├── index.html           # Halaman transaksi
-│   ├── pemasukan-barang.html
-│   ├── pengeluaran-barang.html
-│   └── laporan-transaksi.html
-├── home/
-│   ├── index.html      # Halaman home
-│   └── styles.css      # Styling
-└── manajemen-gudang/
-    └── index.html      # Halaman manajemen gudang
-```
 
 ## Troubleshooting
 
@@ -146,3 +125,4 @@ gudang-upt-gandul3/
 - Semua data disimpan di localStorage browser
 - Data akan hilang jika browser cache dihapus
 - Untuk backup, ekspor data dari localStorage
+
