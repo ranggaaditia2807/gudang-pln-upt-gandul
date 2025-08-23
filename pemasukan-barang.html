@@ -183,7 +183,7 @@
 
         .barang-header {
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
         }
@@ -191,7 +191,6 @@
         .barang-header h4 {
             color: #005baa;
             margin: 0;
-            flex: 1;
         }
 
         #barang-masuk-container {
@@ -273,7 +272,7 @@
     </div>
 
     <script>
-        // Mock data untuk barang (menggantikan data-config.js)
+        // Mock data untuk barang
         const mockBarangData = [
             { kode: "BRG001", nama: "Kertas A4", stok: 100, satuan: "Rim" },
             { kode: "BRG002", nama: "Pulpen Pilot", stok: 50, satuan: "Pcs" },
@@ -288,7 +287,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             generateNoTransaksiMasuk();
             setTanggalHariIni();
-            loadBarangOptions();
+            window.barangData = mockBarangData;
             tambahBarangMasuk(); // Tambah satu barang default
         });
 
@@ -307,39 +306,18 @@
             document.getElementById('tanggalMasuk').value = today;
         }
 
-        function loadBarangOptions() {
-            window.barangData = mockBarangData;
-            updateBarangDropdowns();
-        }
-
-        function updateBarangDropdowns() {
-            const dropdowns = document.querySelectorAll('.kode-barang-masuk');
-            dropdowns.forEach(dropdown => {
-                const currentValue = dropdown.value;
-                dropdown.innerHTML = '<option value="">Pilih Barang</option>';
-                
-                window.barangData.forEach(b => {
-                    const option = document.createElement('option');
-                    option.value = b.kode;
-                    option.textContent = `${b.kode} - ${b.nama} (Stok: ${b.stok} ${b.satuan})`;
-                    option.dataset.nama = b.nama;
-                    option.dataset.stok = b.stok;
-                    option.dataset.satuan = b.satuan;
-                    dropdown.appendChild(option);
-                });
-                
-                if (currentValue) {
-                    dropdown.value = currentValue;
-                }
-            });
-        }
-
         function tambahBarangMasuk() {
             barangMasukCounter++;
             const container = document.getElementById('barang-masuk-container');
             const barangDiv = document.createElement('div');
             barangDiv.className = 'barang-item';
             barangDiv.id = `barang-masuk-${barangMasukCounter}`;
+            
+            // Buat opsi dropdown secara manual
+            let dropdownOptions = '<option value="">Pilih Barang</option>';
+            window.barangData.forEach(b => {
+                dropdownOptions += `<option value="${b.kode}" data-nama="${b.nama}" data-stok="${b.stok}" data-satuan="${b.satuan}">${b.kode} - ${b.nama} (Stok: ${b.stok} ${b.satuan})</option>`;
+            });
             
             barangDiv.innerHTML = `
                 <div class="barang-header">
@@ -352,8 +330,7 @@
                     <div class="form-group">
                         <label for="kode-barang-masuk-${barangMasukCounter}">Kode Barang</label>
                         <select id="kode-barang-masuk-${barangMasukCounter}" class="form-control kode-barang-masuk" onchange="updateNamaBarangMasuk(this)" required>
-                            <option value="">Pilih Barang</option>
-                            ${window.barangData.map(b => `<option value="${b.kode}" data-nama="${b.nama}" data-stok="${b.stok}" data-satuan="${b.satuan}">${b.kode} - ${b.nama} (Stok: ${b.stok} ${b.satuan})</option>`).join('')}
+                            ${dropdownOptions}
                         </select>
                     </div>
                     <div class="form-group">
@@ -374,40 +351,31 @@
             `;
             
             container.appendChild(barangDiv);
-            // Update dropdown untuk barang yang baru ditambahkan
-            updateBarangDropdowns();
         }
 
         function updateNamaBarangMasuk(select) {
             const barangItem = select.closest('.barang-item');
             const selectedOption = select.options[select.selectedIndex];
             
-            const namaBarang = selectedOption.dataset.nama || '';
-            const stok = selectedOption.dataset.stok || '0';
-            const satuan = selectedOption.dataset.satuan || '';
-            
-            barangItem.querySelector('.nama-barang-masuk').value = namaBarang;
-            barangItem.querySelector('.satuan').value = satuan;
-            
-            // Set nilai maksimum untuk input jumlah berdasarkan stok
-            const jumlahInput = barangItem.querySelector('.jumlah-masuk');
-            jumlahInput.max = stok;
+            if (selectedOption.value) {
+                const namaBarang = selectedOption.dataset.nama || '';
+                const satuan = selectedOption.dataset.satuan || '';
+                
+                barangItem.querySelector('.nama-barang-masuk').value = namaBarang;
+                barangItem.querySelector('.satuan').value = satuan;
+            } else {
+                barangItem.querySelector('.nama-barang-masuk').value = '';
+                barangItem.querySelector('.satuan').value = '';
+            }
         }
 
         function validasiStok(input) {
             const barangItem = input.closest('.barang-item');
             const jumlahMasuk = parseInt(input.value) || 0;
-            const stokTersedia = parseInt(barangItem.querySelector('.kode-barang-masuk').selectedOptions[0]?.dataset.stok) || 0;
             
             if (jumlahMasuk <= 0) {
                 alert('Jumlah masuk harus lebih dari 0!');
                 input.value = '';
-                return false;
-            }
-
-            if (jumlahMasuk > stokTersedia) {
-                alert(`Jumlah masuk tidak boleh melebihi stok tersedia (${stokTersedia})!`);
-                input.value = stokTersedia;
                 return false;
             }
 
@@ -421,7 +389,7 @@
                 // Reset counter jika semua barang dihapus
                 if (document.querySelectorAll('.barang-item').length === 0) {
                     barangMasukCounter = 0;
-                    setTimeout(() => tambahBarangMasuk(), 100); // Tambah default barang
+                    setTimeout(() => tambahBarangMasuk(), 100);
                 }
             }
         }
@@ -445,24 +413,17 @@
 
             barangItems.forEach(item => {
                 const kodeBarang = item.querySelector('.kode-barang-masuk').value;
-                const jumlahMasuk = parseInt(item.querySelector('.jumlah-masuk').value);
+                const jumlahMasuk = parseInt(item.querySelector('.jumlah-masuk').value) || 0;
                 const namaBarang = item.querySelector('.nama-barang-masuk').value;
 
-                if (!kodeBarang || !jumlahMasuk || !namaBarang) {
-                    if (kodeBarang || jumlahMasuk || namaBarang) {
+                if (!kodeBarang || jumlahMasuk <= 0 || !namaBarang) {
+                    if (kodeBarang || jumlahMasuk > 0 || namaBarang) {
                         isValid = false;
                     }
                     return;
                 }
 
                 hasData = true;
-
-                if (jumlahMasuk <= 0) {
-                    alert('Jumlah masuk harus lebih dari 0!');
-                    isValid = false;
-                    return;
-                }
-
                 formData.barang.push({
                     kodeBarang,
                     jumlahMasuk,
@@ -476,16 +437,16 @@
             }
 
             if (!isValid) {
+                alert('Mohon lengkapi semua data barang dengan benar!');
                 return;
             }
 
-            // Simpan transaksi (simpan ke localStorage)
+            // Simpan transaksi ke localStorage
             const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
             transaksiPemasukan.push(formData);
             localStorage.setItem('transaksiPemasukan', JSON.stringify(transaksiPemasukan));
 
             alert('Transaksi pemasukan berhasil disimpan!');
-            // Reset form
             batal();
         });
 
