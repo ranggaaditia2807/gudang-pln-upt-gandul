@@ -4,8 +4,200 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pemasukan Barang - Gudang UPT Gandul</title>
-    <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7f9;
+            color: #333;
+        }
+
+        .header {
+            background-color: #005baa;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .dashboard-content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .form-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-top: 1rem;
+        }
+
+        .form-container h2 {
+            color: #005baa;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #555;
+        }
+
+        .form-control {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #005baa;
+            box-shadow: 0 0 0 2px rgba(0,91,170,0.2);
+        }
+
+        .form-control:read-only {
+            background-color: #f5f5f5;
+            color: #666;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: #005baa;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #00488a;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eaeaea;
+        }
+
+        .barang-item {
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #005baa;
+        }
+
+        .barang-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .barang-header h4 {
+            color: #005baa;
+            margin: 0;
+            flex: 1;
+        }
+
+        #barang-masuk-container {
+            margin: 1.5rem 0;
+        }
+    </style>
 </head>
 <body>
     <div class="header">
@@ -44,7 +236,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label for="supplier">Supplier</label>
-                        <input type="text" id="supplier" name="supplier" class="form-control" required placeholder="Nama Tujuan/Departemen">
+                        <input type="text" id="supplier" name="supplier" class="form-control" required placeholder="Nama Supplier">
                     </div>
                     <div class="form-group">
                         <label for="noSuratJalan">No. Surat Jalan</label>
@@ -80,13 +272,21 @@
         </div>
     </div>
 
-    <script src="../shared/data-config.js"></script>
     <script>
+        // Mock data untuk barang (menggantikan data-config.js)
+        const mockBarangData = [
+            { kode: "BRG001", nama: "Kertas A4", stok: 100, satuan: "Rim" },
+            { kode: "BRG002", nama: "Pulpen Pilot", stok: 50, satuan: "Pcs" },
+            { kode: "BRG003", nama: "Binder Clip", stok: 200, satuan: "Box" },
+            { kode: "BRG004", nama: "Stapler", stok: 15, satuan: "Pcs" },
+            { kode: "BRG005", nama: "Tinta Printer", stok: 25, satuan: "Botol" }
+        ];
+
         let barangMasukCounter = 0;
 
         // Inisialisasi
         document.addEventListener('DOMContentLoaded', function() {
-            generateNoTransaksiMasuk(); // Pastikan ini dipanggil di sini
+            generateNoTransaksiMasuk();
             setTanggalHariIni();
             loadBarangOptions();
             tambahBarangMasuk(); // Tambah satu barang default
@@ -99,22 +299,20 @@
             const day = String(today.getDate()).padStart(2, '0');
             const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
             const noTransaksi = `MSK${year}${month}${day}${random}`;
-            document.getElementById('noTransaksiMasuk').value = noTransaksi; // Pastikan ini diatur dengan benar
+            document.getElementById('noTransaksiMasuk').value = noTransaksi;
         }
 
         function setTanggalHariIni() {
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('tanggalMasuk').value = today; // Perbaiki ID dari 'tanggalmasuk' menjadi 'tanggalMasuk'
+            document.getElementById('tanggalMasuk').value = today;
         }
 
         function loadBarangOptions() {
-            const barang = DataConfig.getDataBarang();
-            window.barangData = barang;
+            window.barangData = mockBarangData;
             updateBarangDropdowns();
         }
 
         function updateBarangDropdowns() {
-            // Update semua dropdown yang sudah ada
             const dropdowns = document.querySelectorAll('.kode-barang-masuk');
             dropdowns.forEach(dropdown => {
                 const currentValue = dropdown.value;
@@ -130,7 +328,9 @@
                     dropdown.appendChild(option);
                 });
                 
-                dropdown.value = currentValue;
+                if (currentValue) {
+                    dropdown.value = currentValue;
+                }
             });
         }
 
@@ -174,6 +374,8 @@
             `;
             
             container.appendChild(barangDiv);
+            // Update dropdown untuk barang yang baru ditambahkan
+            updateBarangDropdowns();
         }
 
         function updateNamaBarangMasuk(select) {
@@ -186,14 +388,26 @@
             
             barangItem.querySelector('.nama-barang-masuk').value = namaBarang;
             barangItem.querySelector('.satuan').value = satuan;
+            
+            // Set nilai maksimum untuk input jumlah berdasarkan stok
+            const jumlahInput = barangItem.querySelector('.jumlah-masuk');
+            jumlahInput.max = stok;
         }
 
         function validasiStok(input) {
             const barangItem = input.closest('.barang-item');
             const jumlahMasuk = parseInt(input.value) || 0;
+            const stokTersedia = parseInt(barangItem.querySelector('.kode-barang-masuk').selectedOptions[0]?.dataset.stok) || 0;
+            
             if (jumlahMasuk <= 0) {
                 alert('Jumlah masuk harus lebih dari 0!');
-                input.value = 1;
+                input.value = '';
+                return false;
+            }
+
+            if (jumlahMasuk > stokTersedia) {
+                alert(`Jumlah masuk tidak boleh melebihi stok tersedia (${stokTersedia})!`);
+                input.value = stokTersedia;
                 return false;
             }
 
@@ -202,8 +416,13 @@
 
         function hapusBarangMasuk(id) {
             const barangDiv = document.getElementById(`barang-masuk-${id}`);
-            if (barangDiv) {
+            if (barangDiv && confirm('Apakah Anda yakin ingin menghapus barang ini?')) {
                 barangDiv.remove();
+                // Reset counter jika semua barang dihapus
+                if (document.querySelectorAll('.barang-item').length === 0) {
+                    barangMasukCounter = 0;
+                    setTimeout(() => tambahBarangMasuk(), 100); // Tambah default barang
+                }
             }
         }
 
@@ -260,28 +479,25 @@
                 return;
             }
 
-            // Simpan transaksi
+            // Simpan transaksi (simpan ke localStorage)
             const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
             transaksiPemasukan.push(formData);
             localStorage.setItem('transaksiPemasukan', JSON.stringify(transaksiPemasukan));
 
             alert('Transaksi pemasukan berhasil disimpan!');
-            window.location.href = 'index.html';
+            // Reset form
+            batal();
         });
 
         function batal() {
-            // Mengonfirmasi tindakan batal
-            if (confirm('Apakah Anda yakin ingin membatalkan pemasukan barang?')) {
-                // Mengosongkan form
+            if (confirm('Apakah Anda yakin ingin membatalkan dan mengosongkan form?')) {
                 document.getElementById('formPemasukan').reset();
-                // Menghapus semua barang yang ditambahkan
                 const container = document.getElementById('barang-masuk-container');
                 container.innerHTML = '';
                 barangMasukCounter = 0;
-                // Menghasilkan nomor transaksi baru
                 generateNoTransaksiMasuk();
                 setTanggalHariIni();
-                tambahBarangMasuk(); // Tambah satu barang default
+                tambahBarangMasuk();
             }
         }
     </script>
