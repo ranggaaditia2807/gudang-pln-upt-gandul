@@ -272,22 +272,13 @@
     </div>
 
     <script>
-        // Mock data untuk barang
-        const mockBarangData = [
-            { kode: "BRG001", nama: "Kertas A4", stok: 100, satuan: "Rim" },
-            { kode: "BRG002", nama: "Pulpen Pilot", stok: 50, satuan: "Pcs" },
-            { kode: "BRG003", nama: "Binder Clip", stok: 200, satuan: "Box" },
-            { kode: "BRG004", nama: "Stapler", stok: 15, satuan: "Pcs" },
-            { kode: "BRG005", nama: "Tinta Printer", stok: 25, satuan: "Botol" }
-        ];
-
         let barangMasukCounter = 0;
 
         // Inisialisasi
         document.addEventListener('DOMContentLoaded', function() {
             generateNoTransaksiMasuk();
             setTanggalHariIni();
-            window.barangData = mockBarangData;
+            loadBarangOptions();
             tambahBarangMasuk(); // Tambah satu barang default
         });
 
@@ -306,6 +297,26 @@
             document.getElementById('tanggalMasuk').value = today;
         }
 
+        function loadBarangOptions() {
+            // Mengambil data barang dari localStorage yang sama dengan manajemen gudang
+            const inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+            window.barangData = inventory.map(item => ({
+                kode: item.code,
+                nama: item.name,
+                stok: item.stock,
+                satuan: item.unit
+            }));
+            
+            // Jika tidak ada data, gunakan data dummy sementara
+            if (window.barangData.length === 0) {
+                window.barangData = [
+                    { kode: "BRG001", nama: "Kertas A4", stok: 100, satuan: "Rim" },
+                    { kode: "BRG002", nama: "Pulpen Pilot", stok: 50, satuan: "Pcs" },
+                    { kode: "BRG003", nama: "Binder Clip", stok: 200, satuan: "Box" }
+                ];
+            }
+        }
+
         function tambahBarangMasuk() {
             barangMasukCounter++;
             const container = document.getElementById('barang-masuk-container');
@@ -313,7 +324,7 @@
             barangDiv.className = 'barang-item';
             barangDiv.id = `barang-masuk-${barangMasukCounter}`;
             
-            // Buat opsi dropdown secara manual
+            // Buat opsi dropdown
             let dropdownOptions = '<option value="">Pilih Barang</option>';
             window.barangData.forEach(b => {
                 dropdownOptions += `<option value="${b.kode}" data-nama="${b.nama}" data-stok="${b.stok}" data-satuan="${b.satuan}">${b.kode} - ${b.nama} (Stok: ${b.stok} ${b.satuan})</option>`;
@@ -446,9 +457,41 @@
             transaksiPemasukan.push(formData);
             localStorage.setItem('transaksiPemasukan', JSON.stringify(transaksiPemasukan));
 
+            // Update stok barang di inventory
+            updateStokBarang(formData.barang);
+
             alert('Transaksi pemasukan berhasil disimpan!');
             batal();
         });
+
+        function updateStokBarang(barangMasuk) {
+            // Ambil data inventory dari localStorage
+            let inventory = JSON.parse(localStorage.getItem('inventory')) || [];
+            
+            barangMasuk.forEach(barang => {
+                // Cari barang di inventory
+                const index = inventory.findIndex(item => item.code === barang.kodeBarang);
+                
+                if (index !== -1) {
+                    // Update stok barang
+                    inventory[index].stock += barang.jumlahMasuk;
+                } else {
+                    // Jika barang belum ada, tambahkan baru
+                    inventory.push({
+                        code: barang.kodeBarang,
+                        name: barang.namaBarang,
+                        stock: barang.jumlahMasuk,
+                        unit: barang.satuan || 'Pcs',
+                        category: '',
+                        location: '',
+                        notes: ''
+                    });
+                }
+            });
+            
+            // Simpan kembali ke localStorage
+            localStorage.setItem('inventory', JSON.stringify(inventory));
+        }
 
         function batal() {
             if (confirm('Apakah Anda yakin ingin membatalkan dan mengosongkan form?')) {
