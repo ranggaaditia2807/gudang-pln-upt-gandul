@@ -264,8 +264,8 @@
 
     <script>
         // Data barang dari localStorage
-        let barang = JSON.parse(localStorage.getItem('dataBarang')) || [];
-
+        let barang = JSON.parse(localStorage.getItem('inventory')) || []; 
+        
         // Fungsi untuk menampilkan data barang
         function renderBarang() {
             const tbody = document.querySelector('#tabel-barang tbody');
@@ -383,3 +383,4 @@
     </script>
 </body>
 </html>
+
