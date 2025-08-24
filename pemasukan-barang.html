@@ -261,7 +261,7 @@
             // Buat opsi dropdown
             let dropdownOptions = '<option value="">Pilih Barang</option>';
             barangData.forEach(b => {
-                dropdownOptions += `<option value="${b.kode}" data-nama="${b.nama}" data-stok="${b.stok}" data-satuan="${b.satuan}">${b.kode} - ${b.nama} (Stok: ${b.stok} ${b.satuan})</option>`;
+                dropdownOptions += `<option value="${b.code}" data-nama="${b.name}" data-stok="${b.stock}" data-satuan="${b.unit}">${b.code} - ${b.name} (Stok: ${b.stock} ${b.unit})</option>`;
             });
             
             barangDiv.innerHTML = `
