@@ -272,7 +272,8 @@
     </div>
 
     <script>
-       let barang = JSON.parse(localStorage.getItem('data-barang')) || [];
+        let barangMasukCounter = 0; // Deklarasi dan inisialisasi counter
+        let barang = JSON.parse(localStorage.getItem('data-barang')) || [];
 
         // Inisialisasi
         document.addEventListener('DOMContentLoaded', function() {
@@ -507,5 +508,3 @@
     </script>
 </body>
 </html>
-
-
