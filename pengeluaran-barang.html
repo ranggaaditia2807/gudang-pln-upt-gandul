@@ -13,7 +13,7 @@
         <nav class="nav-links">
             <a href="index.html">Home</a>
             <a href="dashboard.html">Dashboard</a>
-            <a href="manajemen.gudang">Manajemen Gudang</a>
+            <a href="manajemen-gudang.html">Manajemen Gudang</a>
             <a href="laporan.html">Laporan Transaksi</a>
         </nav>
         <div class="user-profile">
@@ -120,7 +120,6 @@
         }
 
         function updateBarangDropdowns() {
-            // Update semua dropdown yang sudah ada
             const dropdowns = document.querySelectorAll('.kode-barang-keluar');
             dropdowns.forEach(dropdown => {
                 const currentValue = dropdown.value;
@@ -305,7 +304,7 @@
             window.location.href = 'index.html';
         });
 
-                function batal() {
+        function batal() {
             // Mengonfirmasi tindakan batal
             if (confirm('Apakah Anda yakin ingin membatalkan pengeluaran barang?')) {
                 // Mengosongkan form
@@ -323,9 +322,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-            
-
