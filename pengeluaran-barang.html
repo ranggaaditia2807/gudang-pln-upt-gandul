@@ -115,8 +115,8 @@
 
         function loadBarangOptions() {
             const barang = DataConfig.getDataBarang();
-            window.barangData = barang;
-            updateBarangDropdowns();
+            window.barangData = barang; // Simpan data barang ke window.barangData
+            updateBarangDropdowns(); // Memperbarui dropdown barang
         }
 
         function updateBarangDropdowns() {
@@ -135,7 +135,7 @@
                     dropdown.appendChild(option);
                 });
                 
-                dropdown.value = currentValue;
+                dropdown.value = currentValue; // Set kembali nilai dropdown yang dipilih sebelumnya
             });
         }
 
