@@ -80,8 +80,31 @@
         </div>
     </div>
 
-    <script src="../shared/data-config.js"></script>
     <script>
+        const DataConfig = {
+            getDataBarang: function() {
+                // Mengambil data barang dari localStorage atau API
+                return JSON.parse(localStorage.getItem('data-barang')) || [];
+            },
+            updateStokBarang: function(kodeBarang, jumlahKeluar, jenis) {
+                // Mengupdate stok barang berdasarkan jenis transaksi
+                const barang = this.getDataBarang();
+                const item = barang.find(b => b.kode === kodeBarang);
+                if (item) {
+                    if (jenis === 'pengeluaran') {
+                        item.stok -= jumlahKeluar; // Kurangi stok untuk pengeluaran
+                    }
+                    localStorage.setItem('data-barang', JSON.stringify(barang));
+                    return true; // Berhasil mengupdate
+                }
+                return false; // Gagal mengupdate
+            },
+            sinkronisasiStok: function() {
+                // Fungsi untuk menyinkronkan stok jika diperlukan
+                // Misalnya, mengambil data terbaru dari server
+            }
+        };
+
         let barangKeluarCounter = 0;
 
         // Inisialisasi
