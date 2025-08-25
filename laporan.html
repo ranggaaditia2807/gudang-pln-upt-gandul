@@ -35,6 +35,11 @@
         button:hover {
             background: #0056b3;
         }
+        .link-transaksi {
+            color: blue;
+            text-decoration: underline;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -84,7 +89,7 @@
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
                     <td>${i + 1}</td>
-                    <td>${noTrans}</td>
+                    <td><span class="link-transaksi" onclick="lihatDetail('${noTrans}', '${t.jenis}')">${noTrans}</span></td>
                     <td>${tanggal}</td>
                     <td>${t.jenis}</td>
                     <td>${tujuan}</td>
