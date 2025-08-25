@@ -9,16 +9,6 @@
 <body>
     <h1>Laporan Transaksi</h1>
 
-    <div class="filter">
-        <label for="filterJenis">Jenis:</label>
-        <select id="filterJenis">
-            <option value="all">Semua</option>
-            <option value="Pemasukan">Pemasukan</option>
-            <option value="Pengeluaran">Pengeluaran</option>
-        </select>
-        <button onclick="filterData()">Terapkan</button>
-    </div>
-
     <table border="1">
         <thead>
             <tr>
@@ -33,10 +23,6 @@
         </thead>
         <tbody id="tbodyLaporan"></tbody>
     </table>
-
-    <h2>Ringkasan</h2>
-    <p>Total Pemasukan: <span id="totalPemasukan">0</span></p>
-    <p>Total Pengeluaran: <span id="totalPengeluaran">0</span></p>
 
     <script>
         function ambilData() {
@@ -56,9 +42,6 @@
             tbody.innerHTML = '';
             
             transaksi.forEach((t, index) => {
-                const row = tbody.insertRow();
-                
-                // hitung total item
                 let totalItem = 0;
                 if (t.barang && Array.isArray(t.barang)) {
                     totalItem = t.barang.reduce((sum, b) => {
@@ -68,15 +51,20 @@
                     }, 0);
                 }
 
+                const noTrans = t.noTransaksi || t.noTransaksiKeluar || t.idTransaksi || t.kodeTransaksi || '-';
+                const tanggal = t.tanggalMasuk || t.tanggalKeluar || '-';
+                const tujuan = t.supplier || t.tujuan || '-';
+
+                const row = tbody.insertRow();
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td>${t.noTransaksi || t.noTransaksiKeluar || t.idTransaksi || '-'}</td>
-                    <td>${t.tanggalMasuk || t.tanggalKeluar || '-'}</td>
-                    <td><span class="${t.jenis === 'Pemasukan' ? 'status-masuk' : 'status-keluar'}">${t.jenis}</span></td>
-                    <td>${t.supplier || t.tujuan || '-'}</td>
+                    <td>${noTrans}</td>
+                    <td>${tanggal}</td>
+                    <td>${t.jenis}</td>
+                    <td>${tujuan}</td>
                     <td>${totalItem}</td>
                     <td>
-                        <button onclick="lihatDetail('${t.noTransaksi || t.noTransaksiKeluar || t.idTransaksi}', '${t.jenis}')">Detail</button>
+                        <button onclick="lihatDetail('${noTrans}', '${t.jenis}')">Detail</button>
                     </td>
                 `;
             });
@@ -103,7 +91,7 @@
             
             if (transaksi) {
                 let detail = `Detail Transaksi ${jenis}\n\n`;
-                detail += `No. Transaksi: ${transaksi.noTransaksi || transaksi.noTransaksiKeluar || transaksi.idTransaksi || transaksi.kodeTransaksi || '-'}\n`;
+                detail += `No. Transaksi: ${noTransaksi}\n`;
                 detail += `Tanggal: ${transaksi.tanggalMasuk || transaksi.tanggalKeluar || '-'}\n`;
                 detail += `${jenis === 'Pemasukan' ? 'Supplier' : 'Tujuan'}: ${transaksi.supplier || transaksi.tujuan || '-'}\n`;
                 detail += `Keterangan: ${transaksi.keterangan || transaksi.keteranganKeluar || '-'}\n\n`;
@@ -119,35 +107,14 @@
 
                 alert(detail);
             } else {
-                console.warn("Data di localStorage:", {transaksiPemasukan, transaksiPengeluaran});
-                alert('Transaksi tidak ditemukan. Cek console (F12) untuk melihat data di localStorage.');
+                console.warn("Transaksi tidak ditemukan:", noTransaksi, jenis);
+                alert('Transaksi tidak ditemukan. Silakan cek console (F12).');
             }
-        }
-
-        function updateRingkasan() {
-            const data = ambilData();
-            const totalPemasukan = data.filter(t => t.jenis === 'Pemasukan').length;
-            const totalPengeluaran = data.filter(t => t.jenis === 'Pengeluaran').length;
-            
-            document.getElementById('totalPemasukan').textContent = totalPemasukan;
-            document.getElementById('totalPengeluaran').textContent = totalPengeluaran;
-        }
-
-        function filterData() {
-            const jenis = document.getElementById('filterJenis').value;
-            let data = ambilData();
-            
-            if (jenis !== 'all') {
-                data = data.filter(t => t.jenis === jenis);
-            }
-            
-            tampilkanData(data);
         }
 
         window.onload = function() {
             const data = ambilData();
             tampilkanData(data);
-            updateRingkasan();
         };
     </script>
 </body>
