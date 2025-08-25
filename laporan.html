@@ -3,176 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Transaksi - Gudang UPT Gandul</title>
+    <title>Laporan Transaksi</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="header">
-        <div class="logo">Gudang UPT Gandul</div>
-        <nav class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="manajemen-gudang.html">Manajemen Gudang</a>
-            <a href="transaksi.html">Transaksi</a>
-        </nav>
+    <h1>Laporan Transaksi</h1>
+
+    <div class="filter">
+        <label for="filterJenis">Jenis:</label>
+        <select id="filterJenis">
+            <option value="all">Semua</option>
+            <option value="Pemasukan">Pemasukan</option>
+            <option value="Pengeluaran">Pengeluaran</option>
+        </select>
+        <button onclick="filterData()">Terapkan</button>
     </div>
 
-    <div class="dashboard-content">
-        <h1 style="text-align:center; margin-bottom:30px; color:#005baa;">
-            <i class="fas fa-chart-line"></i> Laporan Transaksi
-        </h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>No. Transaksi</th>
+                <th>Tanggal</th>
+                <th>Jenis</th>
+                <th>Supplier/Tujuan</th>
+                <th>Total Item</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody id="tbodyLaporan"></tbody>
+    </table>
 
-        <!-- Filter Section -->
-        <div id="form-container">
-            <h2 style="text-align:center; margin-bottom:20px;">Filter Laporan</h2>
-            <form id="filterForm">
-                <div>
-                    <label for="jenisTransaksi">Jenis Transaksi</label>
-                    <select id="jenisTransaksi">
-                        <option value="semua">Semua Transaksi</option>
-                        <option value="pemasukan">Pemasukan</option>
-                        <option value="pengeluaran">Pengeluaran</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label for="tanggalMulai">Tanggal Mulai</label>
-                    <input type="date" id="tanggalMulai">
-                </div>
-                
-                <div>
-                    <label for="tanggalAkhir">Tanggal Akhir</label>
-                    <input type="date" id="tanggalAkhir">
-                </div>
-                
-                <div>
-                    <label for="supplierTujuan">Supplier/Tujuan</label>
-                    <input type="text" id="supplierTujuan" placeholder="Masukkan nama supplier atau tujuan">
-                </div>
-                
-                <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
-                    <button type="button" onclick="generateLaporan()">
-                        <i class="fas fa-search"></i> Generate Laporan
-                    </button>
-                    <button type="button" onclick="exportToExcel()">
-                        <i class="fas fa-file-excel"></i> Export Excel
-                    </button>
-                    <button type="button" onclick="printLaporan()">
-                        <i class="fas fa-print"></i> Cetak
-                    </button>
-                </div>
-            </form>
-        </div>                           
+    <h2>Ringkasan</h2>
+    <p>Total Pemasukan: <span id="totalPemasukan">0</span></p>
+    <p>Total Pengeluaran: <span id="totalPengeluaran">0</span></p>
 
-        <!-- Summary Cards -->
-        <div class="stats-container">
-            <div class="stat-card">
-                <h2 id="totalTransaksi">0</h2>
-                <p>Total Transaksi</p>
-            </div>
-            <div class="stat-card">
-                <h2 id="totalPemasukan">0</h2>
-                <p>Total Pemasukan</p>
-            </div>
-            <div class="stat-card">
-                <h2 id="totalPengeluaran">0</h2>
-                <p>Total Item Keluar</p>
-            </div>
-        </div>
-
-        <!-- Data Table -->
-        <div style="margin-bottom:24px; text-align:center;">
-            <h3 style="color:#005baa; margin-bottom:15px;">Data Transaksi</h3>
-            <div style="overflow-x:auto;">
-                <table id="persediaan-table" style="width:100%;">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>No. Transaksi</th>
-                            <th>Tanggal</th>
-                            <th>Jenis</th>
-                            <th>Supplier/Tujuan</th>
-                            <th>Jumlah Item</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbodyLaporan">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <script src="data-integration.js"></script>
     <script>
-        // Inisialisasi
-        document.addEventListener('DOMContentLoaded', function() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('tanggalAkhir').value = today;
-            
-            const firstDay = new Date();
-            firstDay.setDate(1);
-            document.getElementById('tanggalMulai').value = firstDay.toISOString().split('T')[0];
-            
-            loadSuppliersAndTujuan();
-            generateLaporan();
-        });
-
-        function loadSuppliersAndTujuan() {
+        function ambilData() {
             const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
             const transaksiPengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
             
-            const suppliers = [...new Set(transaksiPemasukan.map(t => t.supplier))];
-            const tujuans = [...new Set(transaksiPengeluaran.map(t => t.tujuan))];
+            const dataGabungan = [
+                ...transaksiPemasukan.map(t => ({ ...t, jenis: 'Pemasukan' })),
+                ...transaksiPengeluaran.map(t => ({ ...t, jenis: 'Pengeluaran' }))
+            ];
             
-            const select = document.getElementById('supplierTujuan');
-            [...suppliers, ...tujuans].forEach(item => {
-                if (item) {
-                    const option = document.createElement('option');
-                    option.value = item;
-                    option.textContent = item;
-                    select.appendChild(option);
-                }
-            });
+            return dataGabungan;
         }
 
-        function generateLaporan() {
-            const jenisTransaksi = document.getElementById('jenisTransaksi').value;
-            const tanggalMulai = document.getElementById('tanggalMulai').value;
-            const tanggalAkhir = document.getElementById('tanggalAkhir').value;
-            const supplierTujuan = document.getElementById('supplierTujuan').value;
-            
-            const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
-            const transaksiPengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
-            
-            let allTransaksi = [];
-            
-            if (jenisTransaksi === 'semua' || jenisTransaksi === 'pemasukan') {
-                allTransaksi = allTransaksi.concat(transaksiPemasukan.map(t => ({...t, jenis: 'Pemasukan'})));
-            }
-            if (jenisTransaksi === 'semua' || jenisTransaksi === 'pengeluaran') {
-                allTransaksi = allTransaksi.concat(transaksiPengeluaran.map(t => ({...t, jenis: 'Pengeluaran'})));
-            }
-            
-            if (tanggalMulai && tanggalAkhir) {
-                allTransaksi = allTransaksi.filter(t => {
-                    const tanggal = new Date(t.tanggalMasuk || t.tanggalKeluar);
-                    return tanggal >= new Date(tanggalMulai) && tanggal <= new Date(tanggalAkhir);
-                });
-            }
-            
-            if (supplierTujuan && supplierTujuan !== '') {
-                allTransaksi = allTransaksi.filter(t => 
-                    (t.supplier === supplierTujuan) || (t.tujuan === supplierTujuan)
-                );
-            }
-            
-            tampilkanData(allTransaksi);
-            updateRingkasan(allTransaksi);
-        }
-
-        // ✅ Perbaikan tampilkanData
         function tampilkanData(transaksi) {
             const tbody = document.getElementById('tbodyLaporan');
             tbody.innerHTML = '';
@@ -180,6 +58,7 @@
             transaksi.forEach((t, index) => {
                 const row = tbody.insertRow();
                 
+                // hitung total item
                 let totalItem = 0;
                 if (t.barang && Array.isArray(t.barang)) {
                     totalItem = t.barang.reduce((sum, b) => {
@@ -188,49 +67,43 @@
                         );
                     }, 0);
                 }
-                
+
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td>${t.noTransaksi || t.noTransaksiKeluar || '-'}</td>
+                    <td>${t.noTransaksi || t.noTransaksiKeluar || t.idTransaksi || '-'}</td>
                     <td>${t.tanggalMasuk || t.tanggalKeluar || '-'}</td>
                     <td><span class="${t.jenis === 'Pemasukan' ? 'status-masuk' : 'status-keluar'}">${t.jenis}</span></td>
                     <td>${t.supplier || t.tujuan || '-'}</td>
                     <td>${totalItem}</td>
                     <td>
-                        <button onclick="lihatDetail('${t.noTransaksi || t.noTransaksiKeluar}', '${t.jenis}')">Detail</button>
+                        <button onclick="lihatDetail('${t.noTransaksi || t.noTransaksiKeluar || t.idTransaksi}', '${t.jenis}')">Detail</button>
                     </td>
                 `;
             });
         }
 
-        // ✅ Perbaikan updateRingkasan
-        function updateRingkasan(transaksi) {
-            const totalTransaksi = transaksi.length;
-            const totalPemasukan = transaksi.filter(t => t.jenis === 'Pemasukan')
-                .reduce((sum, t) => sum + t.barang.reduce((s, b) => s + (parseInt(b.jumlah || b.jumlahMasuk || 0) || 0), 0), 0);
-            const totalPengeluaran = transaksi.filter(t => t.jenis === 'Pengeluaran')
-                .reduce((sum, t) => sum + t.barang.reduce((s, b) => s + (parseInt(b.jumlahKeluar || b.jumlah || 0) || 0), 0), 0);
-            
-            document.getElementById('totalTransaksi').textContent = totalTransaksi;
-            document.getElementById('totalPemasukan').textContent = totalPemasukan;
-            document.getElementById('totalPengeluaran').textContent = totalPengeluaran;
-        }
-
-        // ✅ Perbaikan lihatDetail
         function lihatDetail(noTransaksi, jenis) {
             const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
             const transaksiPengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
             
             let transaksi;
             if (jenis === 'Pemasukan') {
-                transaksi = transaksiPemasukan.find(t => t.noTransaksi === noTransaksi);
+                transaksi = transaksiPemasukan.find(t => 
+                    t.noTransaksi === noTransaksi || 
+                    t.idTransaksi === noTransaksi || 
+                    t.kodeTransaksi === noTransaksi
+                );
             } else {
-                transaksi = transaksiPengeluaran.find(t => t.noTransaksiKeluar === noTransaksi);
+                transaksi = transaksiPengeluaran.find(t => 
+                    t.noTransaksiKeluar === noTransaksi || 
+                    t.idTransaksi === noTransaksi || 
+                    t.kodeTransaksi === noTransaksi
+                );
             }
             
             if (transaksi) {
                 let detail = `Detail Transaksi ${jenis}\n\n`;
-                detail += `No. Transaksi: ${transaksi.noTransaksi || transaksi.noTransaksiKeluar || '-'}\n`;
+                detail += `No. Transaksi: ${transaksi.noTransaksi || transaksi.noTransaksiKeluar || transaksi.idTransaksi || transaksi.kodeTransaksi || '-'}\n`;
                 detail += `Tanggal: ${transaksi.tanggalMasuk || transaksi.tanggalKeluar || '-'}\n`;
                 detail += `${jenis === 'Pemasukan' ? 'Supplier' : 'Tujuan'}: ${transaksi.supplier || transaksi.tujuan || '-'}\n`;
                 detail += `Keterangan: ${transaksi.keterangan || transaksi.keteranganKeluar || '-'}\n\n`;
@@ -246,38 +119,36 @@
 
                 alert(detail);
             } else {
-                alert('Transaksi tidak ditemukan.');
+                console.warn("Data di localStorage:", {transaksiPemasukan, transaksiPengeluaran});
+                alert('Transaksi tidak ditemukan. Cek console (F12) untuk melihat data di localStorage.');
             }
         }
 
-        function exportToExcel() {
-            const table = document.getElementById('persediaan-table');
-            let csv = [];
+        function updateRingkasan() {
+            const data = ambilData();
+            const totalPemasukan = data.filter(t => t.jenis === 'Pemasukan').length;
+            const totalPengeluaran = data.filter(t => t.jenis === 'Pengeluaran').length;
             
-            const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
-            csv.push(headers.join(','));
-            
-            const rows = table.querySelectorAll('tbody tr');
-            rows.forEach(row => {
-                const rowData = Array.from(row.querySelectorAll('td')).map(td => `"${td.textContent}"`);
-                csv.push(rowData.join(','));
-            });
-            
-            const csvContent = csv.join('\n');
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', 'laporan-transaksi.csv');
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            document.getElementById('totalPemasukan').textContent = totalPemasukan;
+            document.getElementById('totalPengeluaran').textContent = totalPengeluaran;
         }
 
-        function printLaporan() {
-            window.print();
+        function filterData() {
+            const jenis = document.getElementById('filterJenis').value;
+            let data = ambilData();
+            
+            if (jenis !== 'all') {
+                data = data.filter(t => t.jenis === jenis);
+            }
+            
+            tampilkanData(data);
         }
+
+        window.onload = function() {
+            const data = ambilData();
+            tampilkanData(data);
+            updateRingkasan();
+        };
     </script>
 </body>
 </html>
