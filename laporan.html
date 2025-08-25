@@ -4,12 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Transaksi</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        button {
+            padding: 5px 10px;
+            border: none;
+            background: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <h1>Laporan Transaksi</h1>
 
-    <table border="1">
+    <table>
         <thead>
             <tr>
                 <th>No</th>
@@ -25,94 +56,90 @@
     </table>
 
     <script>
+        // Ambil data dari localStorage
         function ambilData() {
-            const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
-            const transaksiPengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
-            
-            const dataGabungan = [
-                ...transaksiPemasukan.map(t => ({ ...t, jenis: 'Pemasukan' })),
-                ...transaksiPengeluaran.map(t => ({ ...t, jenis: 'Pengeluaran' }))
+            const pemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
+            const pengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
+
+            return [
+                ...pemasukan.map(t => ({ ...t, jenis: "Pemasukan" })),
+                ...pengeluaran.map(t => ({ ...t, jenis: "Pengeluaran" }))
             ];
-            
-            return dataGabungan;
         }
 
+        // Tampilkan data ke tabel
         function tampilkanData(transaksi) {
-            const tbody = document.getElementById('tbodyLaporan');
-            tbody.innerHTML = '';
-            
-            transaksi.forEach((t, index) => {
-                let totalItem = 0;
-                if (t.barang && Array.isArray(t.barang)) {
-                    totalItem = t.barang.reduce((sum, b) => {
-                        return sum + (
-                            parseInt(b.jumlah || b.jumlahMasuk || b.jumlahKeluar || 0)
-                        );
-                    }, 0);
-                }
+            const tbody = document.getElementById("tbodyLaporan");
+            tbody.innerHTML = "";
 
-                const noTrans = t.noTransaksi || t.noTransaksiKeluar || t.idTransaksi || t.kodeTransaksi || '-';
-                const tanggal = t.tanggalMasuk || t.tanggalKeluar || '-';
-                const tujuan = t.supplier || t.tujuan || '-';
+            transaksi.forEach((t, i) => {
+                const totalItem = (t.barang || []).reduce((sum, b) => {
+                    return sum + (parseInt(b.jumlah || b.jumlahMasuk || b.jumlahKeluar || 0));
+                }, 0);
 
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td>${index + 1}</td>
+                const noTrans = t.noTransaksi || t.noTransaksiKeluar || t.idTransaksi || t.kodeTransaksi || "-";
+                const tanggal = t.tanggalMasuk || t.tanggalKeluar || "-";
+                const tujuan = t.supplier || t.tujuan || "-";
+
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${i + 1}</td>
                     <td>${noTrans}</td>
                     <td>${tanggal}</td>
                     <td>${t.jenis}</td>
                     <td>${tujuan}</td>
                     <td>${totalItem}</td>
-                    <td>
-                        <button onclick="lihatDetail('${noTrans}', '${t.jenis}')">Detail</button>
-                    </td>
+                    <td><button onclick="lihatDetail('${noTrans}', '${t.jenis}')">Detail</button></td>
                 `;
+                tbody.appendChild(tr);
             });
         }
 
+        // Tampilkan detail transaksi
         function lihatDetail(noTransaksi, jenis) {
-            const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
-            const transaksiPengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
-            
+            const pemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
+            const pengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
             let transaksi;
-            if (jenis === 'Pemasukan') {
-                transaksi = transaksiPemasukan.find(t => 
-                    t.noTransaksi === noTransaksi || 
-                    t.idTransaksi === noTransaksi || 
-                    t.kodeTransaksi === noTransaksi
-                );
-            } else {
-                transaksi = transaksiPengeluaran.find(t => 
-                    t.noTransaksiKeluar === noTransaksi || 
-                    t.idTransaksi === noTransaksi || 
-                    t.kodeTransaksi === noTransaksi
-                );
-            }
-            
-            if (transaksi) {
-                let detail = `Detail Transaksi ${jenis}\n\n`;
-                detail += `No. Transaksi: ${noTransaksi}\n`;
-                detail += `Tanggal: ${transaksi.tanggalMasuk || transaksi.tanggalKeluar || '-'}\n`;
-                detail += `${jenis === 'Pemasukan' ? 'Supplier' : 'Tujuan'}: ${transaksi.supplier || transaksi.tujuan || '-'}\n`;
-                detail += `Keterangan: ${transaksi.keterangan || transaksi.keteranganKeluar || '-'}\n\n`;
-                detail += 'Detail Barang:\n';
-                
-                if (transaksi.barang && Array.isArray(transaksi.barang) && transaksi.barang.length > 0) {
-                    transaksi.barang.forEach((b, i) => {
-                        detail += `${i + 1}. Kode: ${b.kodeBarang || '-'}, Nama: ${b.namaBarang || b.nama || '-'}, Jumlah: ${b.jumlah || b.jumlahMasuk || b.jumlahKeluar || 0}\n`;
-                    });
-                } else {
-                    detail += 'Tidak ada detail barang.\n';
-                }
 
-                alert(detail);
+            if (jenis === "Pemasukan") {
+                transaksi = pemasukan.find(t =>
+                    t.noTransaksi === noTransaksi ||
+                    t.idTransaksi === noTransaksi ||
+                    t.kodeTransaksi === noTransaksi
+                );
             } else {
-                console.warn("Transaksi tidak ditemukan:", noTransaksi, jenis);
-                alert('Transaksi tidak ditemukan. Silakan cek console (F12).');
+                transaksi = pengeluaran.find(t =>
+                    t.noTransaksiKeluar === noTransaksi ||
+                    t.idTransaksi === noTransaksi ||
+                    t.kodeTransaksi === noTransaksi
+                );
             }
+
+            if (!transaksi) {
+                alert("Transaksi tidak ditemukan!");
+                return;
+            }
+
+            let detail = `📋 Detail Transaksi ${jenis}\n\n`;
+            detail += `No. Transaksi : ${noTransaksi}\n`;
+            detail += `Tanggal       : ${transaksi.tanggalMasuk || transaksi.tanggalKeluar || "-"}\n`;
+            detail += `${jenis === "Pemasukan" ? "Supplier" : "Tujuan"} : ${transaksi.supplier || transaksi.tujuan || "-"}\n`;
+            detail += `Keterangan    : ${transaksi.keterangan || transaksi.keteranganKeluar || "-"}\n\n`;
+
+            detail += "📦 Daftar Barang:\n";
+            if (transaksi.barang && transaksi.barang.length > 0) {
+                transaksi.barang.forEach((b, idx) => {
+                    detail += `${idx + 1}. Kode: ${b.kodeBarang || "-"}, Nama: ${b.namaBarang || b.nama || "-"}, Jumlah: ${b.jumlah || b.jumlahMasuk || b.jumlahKeluar || 0}\n`;
+                });
+            } else {
+                detail += "- Tidak ada barang -\n";
+            }
+
+            alert(detail);
         }
 
-        window.onload = function() {
+        // Saat halaman dibuka
+        window.onload = () => {
             const data = ambilData();
             tampilkanData(data);
         };
