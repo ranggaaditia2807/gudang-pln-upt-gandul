@@ -108,19 +108,14 @@
     <script>
         // Inisialisasi
         document.addEventListener('DOMContentLoaded', function() {
-            // Set tanggal hari ini
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('tanggalAkhir').value = today;
             
-            // Set tanggal awal bulan ini
             const firstDay = new Date();
             firstDay.setDate(1);
             document.getElementById('tanggalMulai').value = firstDay.toISOString().split('T')[0];
             
-            // Isi dropdown supplier/tujuan
             loadSuppliersAndTujuan();
-            
-            // Generate laporan awal
             generateLaporan();
         });
 
@@ -148,22 +143,18 @@
             const tanggalAkhir = document.getElementById('tanggalAkhir').value;
             const supplierTujuan = document.getElementById('supplierTujuan').value;
             
-            // Ambil data dari localStorage
             const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
             const transaksiPengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
             
             let allTransaksi = [];
             
-            // Filter berdasarkan jenis transaksi
             if (jenisTransaksi === 'semua' || jenisTransaksi === 'pemasukan') {
                 allTransaksi = allTransaksi.concat(transaksiPemasukan.map(t => ({...t, jenis: 'Pemasukan'})));
             }
-            
             if (jenisTransaksi === 'semua' || jenisTransaksi === 'pengeluaran') {
                 allTransaksi = allTransaksi.concat(transaksiPengeluaran.map(t => ({...t, jenis: 'Pengeluaran'})));
             }
             
-            // Filter berdasarkan tanggal
             if (tanggalMulai && tanggalAkhir) {
                 allTransaksi = allTransaksi.filter(t => {
                     const tanggal = new Date(t.tanggalMasuk || t.tanggalKeluar);
@@ -171,18 +162,17 @@
                 });
             }
             
-            // Filter berdasarkan supplier/tujuan
             if (supplierTujuan && supplierTujuan !== '') {
                 allTransaksi = allTransaksi.filter(t => 
                     (t.supplier === supplierTujuan) || (t.tujuan === supplierTujuan)
                 );
             }
             
-            // Tampilkan data
             tampilkanData(allTransaksi);
             updateRingkasan(allTransaksi);
         }
 
+        // ✅ Perbaikan tampilkanData
         function tampilkanData(transaksi) {
             const tbody = document.getElementById('tbodyLaporan');
             tbody.innerHTML = '';
@@ -190,25 +180,21 @@
             transaksi.forEach((t, index) => {
                 const row = tbody.insertRow();
                 
-                // Hitung total item berdasarkan jumlah barang
                 let totalItem = 0;
-                
                 if (t.barang && Array.isArray(t.barang)) {
-                    if (t.jenis === 'Pemasukan') {
-                        // Untuk pemasukan, hitung total jumlah barang
-                        totalItem = t.barang.reduce((sum, b) => sum + (parseInt(b.jumlah) || 0), 0);
-                    } else {
-                        // Untuk pengeluaran, hitung jumlah item yang dikeluarkan
-                        totalItem = t.barang.reduce((sum, b) => sum + (parseInt(b.jumlahKeluar) || 0), 0);
-                    }
+                    totalItem = t.barang.reduce((sum, b) => {
+                        return sum + (
+                            parseInt(b.jumlah || b.jumlahMasuk || b.jumlahKeluar || 0)
+                        );
+                    }, 0);
                 }
                 
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td>${t.noTransaksi || t.noTransaksiKeluar}</td>
-                    <td>${t.tanggalMasuk || t.tanggalKeluar}</td>
+                    <td>${t.noTransaksi || t.noTransaksiKeluar || '-'}</td>
+                    <td>${t.tanggalMasuk || t.tanggalKeluar || '-'}</td>
                     <td><span class="${t.jenis === 'Pemasukan' ? 'status-masuk' : 'status-keluar'}">${t.jenis}</span></td>
-                    <td>${t.supplier || t.tujuan}</td>
+                    <td>${t.supplier || t.tujuan || '-'}</td>
                     <td>${totalItem}</td>
                     <td>
                         <button onclick="lihatDetail('${t.noTransaksi || t.noTransaksiKeluar}', '${t.jenis}')">Detail</button>
@@ -217,18 +203,20 @@
             });
         }
 
+        // ✅ Perbaikan updateRingkasan
         function updateRingkasan(transaksi) {
             const totalTransaksi = transaksi.length;
             const totalPemasukan = transaksi.filter(t => t.jenis === 'Pemasukan')
-                .reduce((sum, t) => sum + t.barang.reduce((s, b) => s + (parseInt(b.jumlah) || 0), 0), 0);
+                .reduce((sum, t) => sum + t.barang.reduce((s, b) => s + (parseInt(b.jumlah || b.jumlahMasuk || 0) || 0), 0), 0);
             const totalPengeluaran = transaksi.filter(t => t.jenis === 'Pengeluaran')
-                .reduce((sum, t) => sum + t.barang.reduce((s, b) => s + (parseInt(b.jumlahKeluar) || 0), 0), 0);
+                .reduce((sum, t) => sum + t.barang.reduce((s, b) => s + (parseInt(b.jumlahKeluar || b.jumlah || 0) || 0), 0), 0);
             
             document.getElementById('totalTransaksi').textContent = totalTransaksi;
             document.getElementById('totalPemasukan').textContent = totalPemasukan;
             document.getElementById('totalPengeluaran').textContent = totalPengeluaran;
         }
 
+        // ✅ Perbaikan lihatDetail
         function lihatDetail(noTransaksi, jenis) {
             const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
             const transaksiPengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
@@ -240,19 +228,17 @@
                 transaksi = transaksiPengeluaran.find(t => t.noTransaksiKeluar === noTransaksi);
             }
             
-            // Tambahkan pemeriksaan untuk memastikan transaksi ditemukan
             if (transaksi) {
                 let detail = `Detail Transaksi ${jenis}\n\n`;
-                detail += `No. Transaksi: ${transaksi.noTransaksi || transaksi.noTransaksiKeluar}\n`;
-                detail += `Tanggal: ${transaksi.tanggalMasuk || transaksi.tanggalKeluar || 'Tidak ada tanggal'}\n`;
-                detail += `${jenis === 'Pemasukan' ? 'Supplier' : 'Tujuan'}: ${transaksi.supplier || transaksi.tujuan || 'Tidak ada informasi'}\n`;
-                detail += `Keterangan: ${transaksi.keterangan || transaksi.keteranganKeluar || 'Tidak ada keterangan'}\n\n`;
+                detail += `No. Transaksi: ${transaksi.noTransaksi || transaksi.noTransaksiKeluar || '-'}\n`;
+                detail += `Tanggal: ${transaksi.tanggalMasuk || transaksi.tanggalKeluar || '-'}\n`;
+                detail += `${jenis === 'Pemasukan' ? 'Supplier' : 'Tujuan'}: ${transaksi.supplier || transaksi.tujuan || '-'}\n`;
+                detail += `Keterangan: ${transaksi.keterangan || transaksi.keteranganKeluar || '-'}\n\n`;
                 detail += 'Detail Barang:\n';
                 
-                // Menambahkan detail barang
-                if (transaksi.barang && Array.isArray(transaksi.barang)) {
-                    transaksi.barang.forEach(b => {
-                        detail += `- Kode: ${b.kodeBarang || 'Tidak ada kode'}, Nama: ${b.namaBarang || 'Tidak ada nama'}, Jumlah: ${b.jumlah || b.jumlahKeluar || 'Tidak ada jumlah'}\n`;
+                if (transaksi.barang && Array.isArray(transaksi.barang) && transaksi.barang.length > 0) {
+                    transaksi.barang.forEach((b, i) => {
+                        detail += `${i + 1}. Kode: ${b.kodeBarang || '-'}, Nama: ${b.namaBarang || b.nama || '-'}, Jumlah: ${b.jumlah || b.jumlahMasuk || b.jumlahKeluar || 0}\n`;
                     });
                 } else {
                     detail += 'Tidak ada detail barang.\n';
@@ -268,17 +254,12 @@
             const table = document.getElementById('persediaan-table');
             let csv = [];
             
-            // Header
             const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
             csv.push(headers.join(','));
             
-            // Data
             const rows = table.querySelectorAll('tbody tr');
             rows.forEach(row => {
-                const rowData = Array.from(row.querySelectorAll('td')).map(td => {
-                    let text = td.textContent;
-                    return `"${text}"`;
-                });
+                const rowData = Array.from(row.querySelectorAll('td')).map(td => `"${td.textContent}"`);
                 csv.push(rowData.join(','));
             });
             
@@ -300,4 +281,3 @@
     </script>
 </body>
 </html>
-
