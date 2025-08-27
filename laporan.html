@@ -202,13 +202,16 @@
                         totalItem = t.barang.reduce((sum, b) => sum + (parseInt(b.jumlahKeluar) || 0), 0);
                     }
                 }
+
+                // Tambahkan log untuk memeriksa nilai t
+                console.log(t); // Tambahkan log ini untuk debugging
                 
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td>${t.noTransaksi || t.noTransaksiKeluar}</td>
-                    <td>${t.tanggalMasuk || t.tanggalKeluar}</td>
+                    <td>${t.noTransaksi || t.noTransaksiKeluar || 'Tidak ada nomor transaksi'}</td>
+                    <td>${t.tanggalMasuk || t.tanggalKeluar || 'Tidak ada tanggal'}</td>
                     <td><span class="${t.jenis === 'Pemasukan' ? 'status-masuk' : 'status-keluar'}">${t.jenis}</span></td>
-                    <td>${t.supplier || t.tujuan}</td>
+                    <td>${t.supplier || t.tujuan || 'Tidak ada informasi'}</td>
                     <td>${totalItem}</td>
                     <td>
                         <button onclick="lihatDetail('${t.noTransaksi || t.noTransaksiKeluar}', '${t.jenis}')">Detail</button>
@@ -300,5 +303,3 @@
     </script>
 </body>
 </html>
-
-
