@@ -100,4 +100,145 @@
 
     table th, table td {
       padding: 12px;
-      border: 1px
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    table th {
+      background: #007bff;
+      color: white;
+    }
+
+    table tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    table tr:hover {
+      background: #eaf2ff;
+    }
+
+    .jenis-pemasukan {
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    .jenis-pengeluaran {
+      color: #dc3545;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <h2>Gudang PLN</h2>
+    <div>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="barang.html">Barang</a>
+      <a href="transaksi.html">Transaksi</a>
+      <a href="laporan.html">Laporan</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Laporan Transaksi Gudang</h2>
+
+    <!-- Ringkasan -->
+    <div class="card-container">
+      <div class="card">
+        <h3>Total Transaksi</h3>
+        <p id="totalTransaksi">0</p>
+      </div>
+      <div class="card">
+        <h3>Total Pemasukan</h3>
+        <p id="totalPemasukan">0</p>
+      </div>
+      <div class="card">
+        <h3>Total Pengeluaran</h3>
+        <p id="totalPengeluaran">0</p>
+      </div>
+    </div>
+
+    <!-- Tabel Laporan -->
+    <div class="table-container">
+      <table id="laporanTable">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Tanggal</th>
+            <th>Jenis</th>
+            <th>Barang</th>
+            <th>Jumlah</th>
+            <th>Lokasi</th>
+            <th>Keterangan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data transaksi akan dimuat di sini -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    // Ambil data dari localStorage
+    const transaksiPemasukan = JSON.parse(localStorage.getItem("transaksiPemasukan")) || [];
+    const transaksiPengeluaran = JSON.parse(localStorage.getItem("transaksiPengeluaran")) || [];
+    const semuaTransaksi = [
+      ...transaksiPemasukan.map(t => ({ ...t, jenis: "Pemasukan" })),
+      ...transaksiPengeluaran.map(t => ({ ...t, jenis: "Pengeluaran" }))
+    ];
+
+    // Urutkan berdasarkan tanggal terbaru
+    semuaTransaksi.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+
+    const laporanTable = document.querySelector("#laporanTable tbody");
+
+    // Isi tabel laporan
+    semuaTransaksi.forEach((t, index) => {
+      t.barang.forEach(barang => {
+        const row = `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${t.tanggal || "-"}</td>
+            <td class="${t.jenis === "Pemasukan" ? "jenis-pemasukan" : "jenis-pengeluaran"}">${t.jenis}</td>
+            <td>${barang.namaBarang || "-"}</td>
+            <td>${t.jenis === "Pemasukan" ? (barang.jumlah || 0) : (barang.jumlahKeluar || 0)}</td>
+            <td>${t.lokasi || "-"}</td>
+            <td>${t.keterangan || "-"}</td>
+          </tr>
+        `;
+        laporanTable.insertAdjacentHTML("beforeend", row);
+      });
+    });
+
+    // Update ringkasan
+    function updateRingkasan(transaksi) {
+      const totalTransaksi = transaksi.length;
+      let totalPemasukan = 0;
+      let totalPengeluaran = 0;
+
+      transaksi.forEach(t => {
+        if (t.barang && Array.isArray(t.barang)) {
+          if (t.jenis === "Pemasukan") {
+            totalPemasukan += t.barang.reduce(
+              (sum, b) => sum + (parseInt(b.jumlah) || 0), 0
+            );
+          } else if (t.jenis === "Pengeluaran") {
+            totalPengeluaran += t.barang.reduce(
+              (sum, b) => sum + (parseInt(b.jumlahKeluar) || 0), 0
+            );
+          }
+        }
+      });
+
+      document.getElementById("totalTransaksi").textContent = totalTransaksi;
+      document.getElementById("totalPemasukan").textContent = totalPemasukan;
+      document.getElementById("totalPengeluaran").textContent = totalPengeluaran;
+    }
+
+    updateRingkasan(semuaTransaksi);
+  </script>
+</body>
+</html>
