@@ -3,204 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Laporan Transaksi - Gudang UPT Gandul</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <style>
-    /* === Global === */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #f0f6ff;
-      color: #2c3e50;
-    }
-    header {
-      background: #1e3a8a; /* biru tua */
-      color: #fff;
-      padding: 15px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-    header h1 {
-      margin: 0;
-      font-size: 20px;
-    }
-
-    /* === Navbar === */
-    nav {
-      background: #2563eb; /* biru */
-      display: flex;
-    }
-    nav a {
-      color: #e0f2fe;
-      padding: 12px 20px;
-      text-decoration: none;
-      display: block;
-      transition: background 0.3s;
-    }
-    nav a:hover, nav a.active {
-      background: #1e40af; /* biru lebih tua */
-      color: #fff;
-    }
-
-    /* === Main Content === */
-    main {
-      padding: 20px;
-    }
-    h2 {
-      margin-top: 0;
-      color: #1e3a8a;
-    }
-
-    /* === Table === */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 15px;
-      background: #fff;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: center;
-    }
-    th {
-      background: #1e40af; /* biru gelap */
-      color: #fff;
-    }
-    tr:nth-child(even) {
-      background: #f1f5f9;
-    }
-    tr:hover {
-      background: #e0f2fe;
-    }
-
-    /* === Summary Cards === */
-    .summary {
-      margin-top: 20px;
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .card {
-      flex: 1;
-      padding: 15px;
-      background: #2563eb;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-      text-align: center;
-      color: #fff;
-      min-width: 200px;
-    }
-    .card h3 {
-      margin: 5px 0;
-      font-size: 18px;
-      font-weight: normal;
-    }
-    .card p {
-      font-size: 24px;
-      font-weight: bold;
-      margin: 0;
-    }
-  </style>
+  <title>Transaksi - Gudang UPT Gandul</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1><i class="fas fa-warehouse"></i> Gudang UPT Gandul</h1>
-  </header>
   <nav>
-    <a href="home.html" class="nav-link">Home</a>
-    <a href="dashboard.html" class="nav-link">Dashboard</a>
-    <a href="transaksi.html" class="nav-link">Transaksi</a>
-    <a href="manajemen-gudang.html" class="nav-link">Manajemen Gudang</a>
-    <a href="laporan.html" class="nav-link active">Laporan</a>
+    <ul>
+      <li><a href="home.html">Home</a></li>
+      <li><a href="dashboard.html">Dashboard</a></li>
+      <li><a href="transaksi.html" class="active">Transaksi</a></li>
+      <li><a href="manajemen-gudang.html">Manajemen Gudang</a></li>
+      <li><a href="laporan.html">Laporan</a></li>
+    </ul>
   </nav>
 
   <main>
-    <h2><i class="fas fa-file-alt"></i> Laporan Transaksi</h2>
+    <h1>Form Transaksi</h1>
+    <form id="formTransaksi">
+      <label for="tipe">Tipe Transaksi:</label>
+      <select id="tipe" name="tipe" required>
+        <option value="pemasukan">Pemasukan</option>
+        <option value="pengeluaran">Pengeluaran</option>
+      </select>
 
-    <table>
-      <thead>
-        <tr>
-          <th>No</th>
-          <th>Tanggal</th>
-          <th>Kode Barang</th>
-          <th>Nama Barang</th>
-          <th>Jumlah</th>
-          <th>Satuan</th>
-          <th>Lokasi</th>
-          <th>Jenis</th>
-        </tr>
-      </thead>
-      <tbody id="laporan-body">
-        <tr><td colspan="8">Memuat data...</td></tr>
-      </tbody>
-    </table>
+      <label for="tanggal">Tanggal:</label>
+      <input type="date" id="tanggal" name="tanggal" required>
 
-    <div class="summary">
-      <div class="card">
-        <h3>Total Pemasukan</h3>
-        <p id="total-pemasukan">0</p>
-      </div>
-      <div class="card">
-        <h3>Total Pengeluaran</h3>
-        <p id="total-pengeluaran">0</p>
-      </div>
-    </div>
+      <label for="kodeBarang">Kode Barang:</label>
+      <input type="text" id="kodeBarang" name="kodeBarang" required>
+
+      <label for="jumlah">Jumlah:</label>
+      <input type="number" id="jumlah" name="jumlah" required>
+
+      <button type="submit">Simpan</button>
+    </form>
   </main>
 
-  <script src="data-config.js"></script>
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const laporanBody = document.getElementById("laporan-body");
-      const totalPemasukanEl = document.getElementById("total-pemasukan");
-      const totalPengeluaranEl = document.getElementById("total-pengeluaran");
+    document.getElementById('formTransaksi').addEventListener('submit', function (e) {
+      e.preventDefault();
 
-      const transactions = JSON.parse(localStorage.getItem("transactions")) || [];
-      let totalPemasukan = 0;
-      let totalPengeluaran = 0;
+      const tipe = document.getElementById('tipe').value;
+      const tanggal = document.getElementById('tanggal').value;
+      const kodeBarang = document.getElementById('kodeBarang').value;
+      const jumlah = parseInt(document.getElementById('jumlah').value, 10);
 
-      if (transactions.length === 0) {
-        laporanBody.innerHTML = "<tr><td colspan='8'>Tidak ada data transaksi.</td></tr>";
-        return;
-      }
+      // ambil transaksi lama
+      let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 
-      laporanBody.innerHTML = "";
+      // buat transaksi baru
+      const newTransaction = {
+        tipe,
+        tanggal,
+        barang: [
+          {
+            kodeBarang,
+            jumlah
+          }
+        ]
+      };
 
-      transactions.forEach((transaksi, index) => {
-        const jenis = transaksi.noTransaksiMasuk ? "Pemasukan" : "Pengeluaran";
-        const tanggal = transaksi.tanggalMasuk || transaksi.tanggalKeluar || "-";
+      transactions.push(newTransaction);
+      localStorage.setItem('transactions', JSON.stringify(transactions));
 
-        transaksi.barang.forEach(item => {
-          const barangList = window.DATA_CONFIG?.barangList || [];
-          const barang = barangList.find(b => b.kode === item.kodeBarang) || {};
-
-          const jumlah = item.jumlahMasuk || item.jumlahKeluar || 0;
-          if (jenis === "Pemasukan") totalPemasukan += jumlah;
-          if (jenis === "Pengeluaran") totalPengeluaran += jumlah;
-
-          const row = `
-            <tr>
-              <td>${index + 1}</td>
-              <td>${tanggal}</td>
-              <td>${item.kodeBarang}</td>
-              <td>${barang.nama || item.namaBarang || "-"}</td>
-              <td>${jumlah}</td>
-              <td>${barang.satuan || "Unit"}</td>
-              <td>${barang.lokasi || "Gudang Utama"}</td>
-              <td>${jenis}</td>
-            </tr>
-          `;
-          laporanBody.insertAdjacentHTML("beforeend", row);
-        });
-      });
-
-      totalPemasukanEl.textContent = totalPemasukan;
-      totalPengeluaranEl.textContent = totalPengeluaran;
+      alert('Transaksi berhasil disimpan!');
+      e.target.reset();
     });
   </script>
 </body>
