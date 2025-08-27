@@ -3,127 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan Pemasukan Barang - Gudang UPT Gandul</title>
+    <title>Laporan Transaksi - Gudang UPT Gandul</title>
+    <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-        }
-        .header {
-            background-color: #005baa;
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-        .nav-links {
-            display: flex;
-            gap: 25px;
-        }
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 5px 0;
-            position: relative;
-        }
-        .nav-links a:hover:after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: white;
-            bottom: 0;
-            left: 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-        .card {
-            background: white;
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .card-title {
-            margin-top: 0;
-            color: #005baa;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-        .status-masuk {
-            color: green;
-        }
-        .status-keluar {
-            color: red;
-        }
-    </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">Laporan Pemasukan Barang</div>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="manajemen-gudang.html">Manajemen Gudang</a>
-            <a href="laporan.html">Laporan</a>
-            <a href="pemasukan-barang.html">Pemasukan Barang</a>
+        <div class="logo">Gudang UPT Gandul</div>
+        <nav class="nav-links">
+            <a href="../home/index.html">Home</a>
+            <a href="../dashboard/index.html">Dashboard</a>
+            <a href="../manajemen gudang/index.html">Manajemen Gudang</a>
+            <a href="../transaksi/index.html">Transaksi</a>
+        </nav>
+    </div>
+
+    <div class="dashboard-content">
+        <h1 style="text-align:center; margin-bottom:30px; color:#005baa;">
+            <i class="fas fa-chart-line"></i> Laporan Transaksi
+        </h1>
+
+        <!-- Filter Section -->
+        <div id="form-container">
+            <h2 style="text-align:center; margin-bottom:20px;">Filter Laporan</h2>
+            <form id="filterForm">
+                <div>
+                    <label for="jenisTransaksi">Jenis Transaksi</label>
+                    <select id="jenisTransaksi">
+                        <option value="semua">Semua Transaksi</option>
+                        <option value="pemasukan">Pemasukan</option>
+                        <option value="pengeluaran">Pengeluaran</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label for="tanggalMulai">Tanggal Mulai</label>
+                    <input type="date" id="tanggalMulai">
+                </div>
+                
+                <div>
+                    <label for="tanggalAkhir">Tanggal Akhir</label>
+                    <input type="date" id="tanggalAkhir">
+                </div>
+                
+                <div>
+                    <label for="supplierTujuan">Supplier/Tujuan</label>
+                    <input type="text" id="supplierTujuan" placeholder="Masukkan nama supplier atau tujuan">
+                </div>
+                
+                <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
+                    <button type="button" onclick="generateLaporan()">
+                        <i class="fas fa-search"></i> Generate Laporan
+                    </button>
+                    <button type="button" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel"></i> Export Excel
+                    </button>
+                    <button type="button" onclick="printLaporan()">
+                        <i class="fas fa-print"></i> Cetak
+                    </button>
+                </div>
+            </form>
+        </div>                           
+
+        <!-- Summary Cards -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <h2 id="totalTransaksi">0</h2>
+                <p>Total Transaksi</p>
+            </div>
+            <div class="stat-card">
+                <h2 id="totalPemasukan">0</h2>
+                <p>Total Pemasukan</p>
+            </div>
+            <div class="stat-card">
+                <h2 id="totalPengeluaran">0</h2>
+                <p>Total Item Keluar</p>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div style="margin-bottom:24px; text-align:center;">
+            <h3 style="color:#005baa; margin-bottom:15px;">Data Transaksi</h3>
+            <div style="overflow-x:auto;">
+                <table id="persediaan-table" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>No. Transaksi</th>
+                            <th>Tanggal</th>
+                            <th>Jenis</th>
+                            <th>Supplier/Tujuan</th>
+                            <th>Jumlah Item</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyLaporan">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <div class="container">
-        <div class="card">
-            <h2 class="card-title">Daftar Transaksi Pemasukan</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>No Transaksi</th>
-                        <th>Tanggal</th>
-                        <th>Jenis</th>
-                        <th>Supplier</th>
-                        <th>Jumlah Item</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="tbodyLaporan">
-                    <!-- Data transaksi akan ditampilkan di sini -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
+    <script src="data-integration.js"></script>
     <script>
-        // Ambil data transaksi dari localStorage
-        const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
-        tampilkanData(transaksiPemasukan);
+        // Inisialisasi
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set tanggal hari ini
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('tanggalAkhir').value = today;
+            
+            // Set tanggal awal bulan ini
+            const firstDay = new Date();
+            firstDay.setDate(1);
+            document.getElementById('tanggalMulai').value = firstDay.toISOString().split('T')[0];
+            
+            // Isi dropdown supplier/tujuan
+            loadSuppliersAndTujuan();
+            
+            // Generate laporan awal
+            generateLaporan();
+        });
+
+        function loadSuppliersAndTujuan() {
+            const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
+            const transaksiPengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
+            
+            const suppliers = [...new Set(transaksiPemasukan.map(t => t.supplier))];
+            const tujuans = [...new Set(transaksiPengeluaran.map(t => t.tujuan))];
+            
+            const select = document.getElementById('supplierTujuan');
+            [...suppliers, ...tujuans].forEach(item => {
+                if (item) {
+                    const option = document.createElement('option');
+                    option.value = item;
+                    option.textContent = item;
+                    select.appendChild(option);
+                }
+            });
+        }
+
+        function generateLaporan() {
+            const jenisTransaksi = document.getElementById('jenisTransaksi').value;
+            const tanggalMulai = document.getElementById('tanggalMulai').value;
+            const tanggalAkhir = document.getElementById('tanggalAkhir').value;
+            const supplierTujuan = document.getElementById('supplierTujuan').value;
+            
+            // Ambil data dari localStorage
+            const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
+            const transaksiPengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
+            
+            let allTransaksi = [];
+            
+            // Filter berdasarkan jenis transaksi
+            if (jenisTransaksi === 'semua' || jenisTransaksi === 'pemasukan') {
+                allTransaksi = allTransaksi.concat(transaksiPemasukan.map(t => ({...t, jenis: 'Pemasukan'})));
+            }
+            
+            if (jenisTransaksi === 'semua' || jenisTransaksi === 'pengeluaran') {
+                allTransaksi = allTransaksi.concat(transaksiPengeluaran.map(t => ({...t, jenis: 'Pengeluaran'})));
+            }
+            
+            // Filter berdasarkan tanggal
+            if (tanggalMulai && tanggalAkhir) {
+                allTransaksi = allTransaksi.filter(t => {
+                    const tanggal = new Date(t.tanggalMasuk || t.tanggalKeluar);
+                    return tanggal >= new Date(tanggalMulai) && tanggal <= new Date(tanggalAkhir);
+                });
+            }
+            
+            // Filter berdasarkan supplier/tujuan
+            if (supplierTujuan && supplierTujuan !== '') {
+                allTransaksi = allTransaksi.filter(t => 
+                    (t.supplier === supplierTujuan) || (t.tujuan === supplierTujuan)
+                );
+            }
+            
+            // Tampilkan data
+            tampilkanData(allTransaksi);
+            updateRingkasan(allTransaksi);
+        }
 
         function tampilkanData(transaksi) {
             const tbody = document.getElementById('tbodyLaporan');
@@ -134,27 +192,110 @@
                 
                 // Hitung total item berdasarkan jumlah barang
                 let totalItem = 0;
+                
                 if (t.barang && Array.isArray(t.barang)) {
-                    totalItem = t.barang.reduce((sum, b) => sum + (parseInt(b.jumlahMasuk) || 0), 0);
+                    if (t.jenis === 'Pemasukan') {
+                        // Untuk pemasukan, hitung total jumlah barang
+                        totalItem = t.barang.reduce((sum, b) => sum + (parseInt(b.jumlah) || 0), 0);
+                    } else {
+                        // Untuk pengeluaran, hitung jumlah item yang dikeluarkan
+                        totalItem = t.barang.reduce((sum, b) => sum + (parseInt(b.jumlahKeluar) || 0), 0);
+                    }
                 }
-
+                
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td>${t.noTransaksi || 'Tidak ada nomor transaksi'}</td>
-                    <td>${t.tanggalMasuk || 'Tidak ada tanggal'}</td>
+                    <td>${t.noTransaksi || t.noTransaksiKeluar}</td>
+                    <td>${t.tanggalMasuk || t.tanggalKeluar}</td>
                     <td><span class="${t.jenis === 'Pemasukan' ? 'status-masuk' : 'status-keluar'}">${t.jenis}</span></td>
-                    <td>${t.supplier || 'Tidak ada informasi'}</td>
-                    <td>${totalItem}</td> <!-- Menampilkan total item -->
+                    <td>${t.supplier || t.tujuan}</td>
+                    <td>${totalItem}</td>
                     <td>
-                        <button onclick="lihatDetail('${t.noTransaksi}', '${t.jenis}')">Detail</button>
+                        <button onclick="lihatDetail('${t.noTransaksi || t.noTransaksiKeluar}', '${t.jenis}')">Detail</button>
                     </td>
                 `;
             });
         }
 
+        function updateRingkasan(transaksi) {
+            const totalTransaksi = transaksi.length;
+            const totalPemasukan = transaksi.filter(t => t.jenis === 'Pemasukan')
+                .reduce((sum, t) => sum + t.barang.reduce((s, b) => s + (parseInt(b.jumlah) || 0), 0), 0);
+            const totalPengeluaran = transaksi.filter(t => t.jenis === 'Pengeluaran')
+                .reduce((sum, t) => sum + t.barang.reduce((s, b) => s + (parseInt(b.jumlahKeluar) || 0), 0), 0);
+            
+            document.getElementById('totalTransaksi').textContent = totalTransaksi;
+            document.getElementById('totalPemasukan').textContent = totalPemasukan;
+            document.getElementById('totalPengeluaran').textContent = totalPengeluaran;
+        }
+
         function lihatDetail(noTransaksi, jenis) {
-            // Implementasikan fungsi untuk melihat detail transaksi
-            alert(`Detail untuk transaksi: ${noTransaksi}, Jenis: ${jenis}`);
+            const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
+            const transaksiPengeluaran = JSON.parse(localStorage.getItem('transaksiPengeluaran')) || [];
+            
+            let transaksi;
+            if (jenis === 'Pemasukan') {
+                transaksi = transaksiPemasukan.find(t => t.noTransaksi === noTransaksi);
+            } else {
+                transaksi = transaksiPengeluaran.find(t => t.noTransaksiKeluar === noTransaksi);
+            }
+            
+            // Tambahkan pemeriksaan untuk memastikan transaksi ditemukan
+            if (transaksi) {
+                let detail = `Detail Transaksi ${jenis}\n\n`;
+                detail += `No. Transaksi: ${transaksi.noTransaksi || transaksi.noTransaksiKeluar}\n`;
+                detail += `Tanggal: ${transaksi.tanggalMasuk || transaksi.tanggalKeluar || 'Tidak ada tanggal'}\n`;
+                detail += `${jenis === 'Pemasukan' ? 'Supplier' : 'Tujuan'}: ${transaksi.supplier || transaksi.tujuan || 'Tidak ada informasi'}\n`;
+                detail += `Keterangan: ${transaksi.keterangan || transaksi.keteranganKeluar || 'Tidak ada keterangan'}\n\n`;
+                detail += 'Detail Barang:\n';
+                
+                // Menambahkan detail barang
+                if (transaksi.barang && Array.isArray(transaksi.barang)) {
+                    transaksi.barang.forEach(b => {
+                        detail += `- Kode: ${b.kodeBarang || 'Tidak ada kode'}, Nama: ${b.namaBarang || 'Tidak ada nama'}, Jumlah: ${b.jumlah || b.jumlahKeluar || 'Tidak ada jumlah'}\n`;
+                    });
+                } else {
+                    detail += 'Tidak ada detail barang.\n';
+                }
+
+                alert(detail);
+            } else {
+                alert('Transaksi tidak ditemukan.');
+            }
+        }
+
+        function exportToExcel() {
+            const table = document.getElementById('persediaan-table');
+            let csv = [];
+            
+            // Header
+            const headers = Array.from(table.querySelectorAll('th')).map(th => th.textContent);
+            csv.push(headers.join(','));
+            
+            // Data
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const rowData = Array.from(row.querySelectorAll('td')).map(td => {
+                    let text = td.textContent;
+                    return `"${text}"`;
+                });
+                csv.push(rowData.join(','));
+            });
+            
+            const csvContent = csv.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'laporan-transaksi.csv');
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function printLaporan() {
+            window.print();
         }
     </script>
 </body>
