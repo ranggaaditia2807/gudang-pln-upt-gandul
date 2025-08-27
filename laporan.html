@@ -3,305 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Laporan Transaksi - Gudang PLN UPT Gandul</title>
+  <title>Laporan Transaksi - Gudang PLN</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
   <style>
-    /* ====== Style Dasar ====== */
     body {
       font-family: Arial, sans-serif;
+      background: #f4f6f9;
       margin: 0;
       padding: 0;
-      background: #f4f6f9;
       color: #333;
     }
 
-    header {
-      background: #007bff;
-      color: white;
-      text-align: center;
-      padding: 20px;
+    /* Navbar */
+    .navbar {
+      background: #007bff; /* Biru PLN */
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .navbar h2 {
+      color: #fff;
+      margin: 0;
+    }
+    .navbar a {
+      color: #fff;
+      margin-left: 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .navbar a:hover {
+      text-decoration: underline;
     }
 
-    main {
+    .container {
       padding: 20px;
-      max-width: 1100px;
+      max-width: 1200px;
       margin: auto;
     }
 
-    h1, h2 {
-      margin: 0 0 15px 0;
+    h2 {
+      text-align: center;
+      color: #004085; /* Biru Gelap */
+      margin-bottom: 20px;
     }
 
-    /* ===== Ringkasan ===== */
-    .ringkasan {
-      margin-bottom: 30px;
-    }
-
-    .stats {
+    .card-container {
       display: flex;
-      gap: 20px;
+      justify-content: space-around;
+      margin-bottom: 20px;
       flex-wrap: wrap;
     }
 
-    .stat {
-      flex: 1;
-      background: white;
+    .card {
+      background: #fff;
       padding: 20px;
-      border-radius: 8px;
-      text-align: center;
+      border-radius: 10px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+      flex: 1;
+      margin: 10px;
+      min-width: 200px;
+      border-top: 4px solid #007bff;
     }
 
-    .stat i {
-      font-size: 30px;
+    .card h3 {
       margin-bottom: 10px;
-      color: #007bff;
+      color: #004085;
     }
 
-    .stat p {
-      margin: 5px 0;
-      font-size: 14px;
-      color: #666;
-    }
-
-    .stat h3 {
+    .card p {
+      font-size: 1.4em;
+      font-weight: bold;
       margin: 0;
-      font-size: 24px;
-      color: #333;
     }
 
-    /* ===== Tabel ===== */
+    #totalPemasukan {
+      color: #28a745; /* Hijau */
+    }
+    #totalPengeluaran {
+      color: #dc3545; /* Merah */
+    }
+    #totalTransaksi {
+      color: #007bff; /* Biru PLN */
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-top: 10px;
     }
 
-    thead {
-      background: #007bff;
-      color: white;
-    }
-
-    th, td {
+    table th, table td {
       padding: 12px;
-      text-align: left;
-      border-bottom: 1px solid #ddd;
-      font-size: 14px;
-    }
-
-    tr:hover {
-      background: #f1f1f1;
-    }
-
-    /* ===== Tombol Export ===== */
-    .export-btns {
-      margin: 20px 0;
-      text-align: right;
-    }
-
-    .btn {
-      display: inline-block;
-      background: #007bff;
-      color: white;
-      padding: 10px 15px;
-      margin-left: 10px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 14px;
-      transition: background 0.3s;
-    }
-
-    .btn:hover {
-      background: #0056b3;
-    }
-
-    .btn i {
-      margin-right: 5px;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Laporan Transaksi Gudang PLN UPT Gandul</h1>
-  </header>
-
-  <main>
-    <section class="ringkasan">
-      <h2>Ringkasan</h2>
-      <div class="stats">
-        <div class="stat">
-          <i class="fas fa-exchange-alt"></i>
-          <p>Total Transaksi</p>
-          <h3 id="totalTransaksi">0</h3>
-        </div>
-        <div class="stat">
-          <i class="fas fa-arrow-down"></i>
-          <p>Total Pemasukan</p>
-          <h3 id="totalPemasukan">0</h3>
-        </div>
-        <div class="stat">
-          <i class="fas fa-arrow-up"></i>
-          <p>Total Pengeluaran</p>
-          <h3 id="totalPengeluaran">0</h3>
-        </div>
-      </div>
-    </section>
-
-    <section class="tabel">
-      <h2>Detail Transaksi</h2>
-
-      <div class="export-btns">
-        <a href="#" class="btn" id="exportExcel"><i class="fas fa-file-excel"></i> Export Excel</a>
-        <a href="#" class="btn" id="exportPDF"><i class="fas fa-file-pdf"></i> Export PDF</a>
-      </div>
-
-      <table id="tabelLaporan">
-        <thead>
-          <tr>
-            <th>Tanggal</th>
-            <th>Jenis</th>
-            <th>Kode Barang</th>
-            <th>Nama Barang</th>
-            <th>Jumlah</th>
-            <th>Satuan</th>
-            <th>Lokasi</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Data transaksi akan ditampilkan di sini -->
-        </tbody>
-      </table>
-    </section>
-  </main>
-
-  <!-- jsPDF & SheetJS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-
-  <script>
-    // ===== Konfigurasi Data =====
-    const DATA_CONFIG = {
-      STORAGE_KEYS: {
-        BARANG: 'barang',
-        TRANSAKSI_PEMASUKAN: 'transaksiPemasukan',
-        TRANSAKSI_PENGELUARAN: 'transaksiPengeluaran',
-        LAPORAN: 'laporan'
-      },
-      DEFAULT_BARANG: [
-        { kode: 'BRG001', nama: 'Laptop Dell', stok: 10, satuan: 'unit', lokasi: 'Rak A1' },
-        { kode: 'BRG002', nama: 'Mouse Wireless', stok: 5, satuan: 'pcs', lokasi: 'Rak B2' },
-        { kode: 'BRG003', nama: 'Keyboard Mechanical', stok: 2, satuan: 'pcs', lokasi: 'Rak B3' }
-      ],
-      getDataBarang() {
-        return JSON.parse(localStorage.getItem(this.STORAGE_KEYS.BARANG)) || [];
-      },
-      saveDataBarang(barang) {
-        localStorage.setItem(this.STORAGE_KEYS.BARANG, JSON.stringify(barang));
-      },
-      initData() {
-        if (!localStorage.getItem(this.STORAGE_KEYS.BARANG)) {
-          this.saveDataBarang(this.DEFAULT_BARANG);
-        }
-      },
-      sinkronisasiStok() {
-        const barang = this.getDataBarang();
-        const pemasukan = JSON.parse(localStorage.getItem(this.STORAGE_KEYS.TRANSAKSI_PEMASUKAN)) || [];
-        const pengeluaran = JSON.parse(localStorage.getItem(this.STORAGE_KEYS.TRANSAKSI_PENGELUARAN)) || [];
-
-        const stokBaru = barang.map(item => {
-          let stokAkhir = item.stok;
-          pemasukan.forEach(t => t.barang.forEach(b => {
-            if (b.kodeBarang === item.kode) stokAkhir += b.jumlah || 0;
-          }));
-          pengeluaran.forEach(t => t.barang.forEach(b => {
-            if (b.kodeBarang === item.kode) stokAkhir -= b.jumlahKeluar || 0;
-          }));
-          return { ...item, stok: Math.max(0, stokAkhir) };
-        });
-
-        this.saveDataBarang(stokBaru);
-        return stokBaru;
-      }
-    };
-
-    // ===== Laporan =====
-    function tampilkanLaporan() {
-      const pemasukan = JSON.parse(localStorage.getItem(DATA_CONFIG.STORAGE_KEYS.TRANSAKSI_PEMASUKAN)) || [];
-      const pengeluaran = JSON.parse(localStorage.getItem(DATA_CONFIG.STORAGE_KEYS.TRANSAKSI_PENGELUARAN)) || [];
-
-      const semuaTransaksi = [
-        ...pemasukan.map(t => ({ ...t, jenis: 'Pemasukan' })),
-        ...pengeluaran.map(t => ({ ...t, jenis: 'Pengeluaran' }))
-      ];
-
-      const tbody = document.querySelector("#tabelLaporan tbody");
-      tbody.innerHTML = "";
-
-      semuaTransaksi.forEach(transaksi => {
-        transaksi.barang.forEach(barang => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${transaksi.tanggal}</td>
-            <td>${transaksi.jenis}</td>
-            <td>${barang.kodeBarang}</td>
-            <td>${barang.namaBarang}</td>
-            <td>${barang.jumlah || barang.jumlahKeluar || 0}</td>
-            <td>${barang.satuan || '-'}</td>
-            <td>${barang.lokasi || '-'}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      });
-
-      updateRingkasan(semuaTransaksi);
-    }
-
-    function updateRingkasan(transaksi) {
-      const totalTransaksi = transaksi.length;
-      let totalPemasukan = 0;
-      let totalPengeluaran = 0;
-
-      transaksi.forEach(t => {
-        if (t.barang) {
-          if (t.jenis === 'Pemasukan') {
-            totalPemasukan += t.barang.reduce((sum, b) => sum + (parseInt(b.jumlah) || 0), 0);
-          } else {
-            totalPengeluaran += t.barang.reduce((sum, b) => sum + (parseInt(b.jumlahKeluar) || 0), 0);
-          }
-        }
-      });
-
-      document.getElementById('totalTransaksi').textContent = totalTransaksi;
-      document.getElementById('totalPemasukan').textContent = totalPemasukan;
-      document.getElementById('totalPengeluaran').textContent = totalPengeluaran;
-    }
-
-    // ===== Export =====
-    document.getElementById("exportExcel").addEventListener("click", () => {
-      const wb = XLSX.utils.table_to_book(document.getElementById("tabelLaporan"), {sheet:"Laporan"});
-      XLSX.writeFile(wb, "laporan_transaksi.xlsx");
-    });
-
-    document.getElementById("exportPDF").addEventListener("click", () => {
-      const { jsPDF } = window.jspdf;
-      const doc = new jsPDF();
-      doc.text("Laporan Transaksi Gudang PLN UPT Gandul", 14, 15);
-      doc.autoTable({ html: '#tabelLaporan', startY: 20 });
-      doc.save("laporan_transaksi.pdf");
-    });
-
-    // ===== Init =====
-    document.addEventListener("DOMContentLoaded", function() {
-      DATA_CONFIG.initData();
-      DATA_CONFIG.sinkronisasiStok();
-      tampilkanLaporan();
-    });
-  </script>
-</body>
-</html>
+      border: 1px
