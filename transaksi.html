@@ -6,85 +6,105 @@
   <title>Laporan Transaksi - Gudang UPT Gandul</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
   <style>
+    /* === Global === */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      background: #f4f6f9;
+      background: #f0f6ff;
+      color: #2c3e50;
     }
     header {
-      background: #2c3e50;
+      background: #1e3a8a; /* biru tua */
       color: #fff;
       padding: 15px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     header h1 {
       margin: 0;
       font-size: 20px;
     }
+
+    /* === Navbar === */
     nav {
-      background: #34495e;
+      background: #2563eb; /* biru */
       display: flex;
     }
     nav a {
-      color: #ecf0f1;
+      color: #e0f2fe;
       padding: 12px 20px;
       text-decoration: none;
       display: block;
+      transition: background 0.3s;
     }
     nav a:hover, nav a.active {
-      background: #1abc9c;
+      background: #1e40af; /* biru lebih tua */
       color: #fff;
     }
+
+    /* === Main Content === */
     main {
       padding: 20px;
     }
     h2 {
       margin-top: 0;
-      color: #2c3e50;
+      color: #1e3a8a;
     }
+
+    /* === Table === */
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 15px;
       background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
     th, td {
       border: 1px solid #ddd;
-      padding: 8px;
+      padding: 10px;
       text-align: center;
     }
     th {
-      background: #2c3e50;
+      background: #1e40af; /* biru gelap */
       color: #fff;
     }
     tr:nth-child(even) {
-      background: #f9f9f9;
+      background: #f1f5f9;
     }
+    tr:hover {
+      background: #e0f2fe;
+    }
+
+    /* === Summary Cards === */
     .summary {
       margin-top: 20px;
       display: flex;
       gap: 20px;
+      flex-wrap: wrap;
     }
     .card {
       flex: 1;
       padding: 15px;
-      background: #fff;
+      background: #2563eb;
       border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.15);
       text-align: center;
+      color: #fff;
+      min-width: 200px;
     }
     .card h3 {
       margin: 5px 0;
       font-size: 18px;
-      color: #2c3e50;
+      font-weight: normal;
     }
     .card p {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: bold;
       margin: 0;
-      color: #1abc9c;
     }
   </style>
 </head>
@@ -156,11 +176,9 @@
         const tanggal = transaksi.tanggalMasuk || transaksi.tanggalKeluar || "-";
 
         transaksi.barang.forEach(item => {
-          // cari detail barang di DATA_CONFIG
           const barangList = window.DATA_CONFIG?.barangList || [];
           const barang = barangList.find(b => b.kode === item.kodeBarang) || {};
 
-          // jumlah sesuai jenis transaksi
           const jumlah = item.jumlahMasuk || item.jumlahKeluar || 0;
           if (jenis === "Pemasukan") totalPemasukan += jumlah;
           if (jenis === "Pengeluaran") totalPengeluaran += jumlah;
