@@ -157,8 +157,10 @@
 
         transaksi.barang.forEach(item => {
           // cari detail barang di DATA_CONFIG
-          const barang = (window.DATA_CONFIG?.barangList || []).find(b => b.kode === item.kodeBarang) || {};
+          const barangList = window.DATA_CONFIG?.barangList || [];
+          const barang = barangList.find(b => b.kode === item.kodeBarang) || {};
 
+          // jumlah sesuai jenis transaksi
           const jumlah = item.jumlahMasuk || item.jumlahKeluar || 0;
           if (jenis === "Pemasukan") totalPemasukan += jumlah;
           if (jenis === "Pengeluaran") totalPengeluaran += jumlah;
@@ -170,8 +172,8 @@
               <td>${item.kodeBarang}</td>
               <td>${barang.nama || item.namaBarang || "-"}</td>
               <td>${jumlah}</td>
-              <td>${barang.satuan || "-"}</td>
-              <td>${barang.lokasi || "-"}</td>
+              <td>${barang.satuan || "Unit"}</td>
+              <td>${barang.lokasi || "Gudang Utama"}</td>
               <td>${jenis}</td>
             </tr>
           `;
