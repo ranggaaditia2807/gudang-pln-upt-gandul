@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pemasukan Barang - Gudang UPT Gandul</title>
+    <title>Laporan Pemasukan Barang - Gudang UPT Gandul</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
@@ -65,308 +65,96 @@
             border-bottom: 1px solid #eee;
             padding-bottom: 10px;
         }
-        .form-container {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-top: 20px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        .form-control {
+        table {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .form-control:focus {
-            border-color: #005baa;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(0,91,170,0.2);
-        }
-        .action-buttons {
-            display: flex;
-            gap: 10px;
+            border-collapse: collapse;
             margin-top: 20px;
-            justify-content: flex-end;
         }
-        .btn {
-            padding: 8px 15px;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
         }
-        .btn-primary {
-            background-color: #005baa;
-            color: white;
+        th {
+            background-color: #f2f2f2;
         }
-        .btn-primary:hover {
-            background-color: #004a8d;
+        .status-masuk {
+            color: green;
         }
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-        .btn-danger:hover {
-            background-color: #c82333;
+        .status-keluar {
+            color: red;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">Pemasukan Barang</div>
+        <div class="logo">Laporan Pemasukan Barang</div>
         <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="dashboard.html">Dashboard</a>
             <a href="manajemen-gudang.html">Manajemen Gudang</a>
             <a href="laporan.html">Laporan</a>
+            <a href="pemasukan-barang.html">Pemasukan Barang</a>
         </div>
     </div>
 
     <div class="container">
         <div class="card">
-            <h2 class="card-title">Form Pemasukan Barang</h2>
-            <form id="formPemasukan">
-                <div class="form-group">
-                    <label for="noTransaksiMasuk">No. Transaksi</label>
-                    <input type="text" id="noTransaksiMasuk" name="noTransaksiMasuk" class="form-control" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="tanggalMasuk">Tanggal Masuk</label>
-                    <input type="date" id="tanggalMasuk" name="tanggalMasuk" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="supplier">Supplier</label>
-                    <input type="text" id="supplier" name="supplier" class="form-control" required placeholder="Nama Supplier">
-                </div>
-                <div class="form-group">
-                    <label for="noSuratJalan">No. Surat Jalan</label>
-                    <input type="text" id="noSuratJalan" name="noSuratJalan" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="keteranganMasuk">Keterangan</label>
-                    <textarea id="keteranganMasuk" name="keteranganMasuk" class="form-control" rows="2" placeholder="Catatan tambahan..."></textarea>
-                </div>
-
-                <h3 style="margin-top: 30px; color:#005baa;">Detail Barang</h3>
-                <div id="barang-masuk-container">
-                    <!-- Barang items will be added here -->
-                </div>
-
-                <button type="button" class="btn btn-primary" onclick="tambahBarangMasuk()">
-                    <i class="fas fa-plus"></i> Tambah Barang
-                </button>
-
-                <div class="action-buttons">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Simpan Transaksi
-                    </button>
-                    <button type="button" class="btn btn-danger" onclick="batal()">
-                        <i class="fas fa-times"></i> Batal
-                    </button>
-                </div>
-            </form>
+            <h2 class="card-title">Daftar Transaksi Pemasukan</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>No Transaksi</th>
+                        <th>Tanggal</th>
+                        <th>Jenis</th>
+                        <th>Supplier</th>
+                        <th>Jumlah Item</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyLaporan">
+                    <!-- Data transaksi akan ditampilkan di sini -->
+                </tbody>
+            </table>
         </div>
     </div>
 
     <script>
-        let barangMasukCounter = 0; // Deklarasi dan inisialisasi counter
-        let barangData = JSON.parse(localStorage.getItem('data-barang')) || []; // Ambil data barang dari localStorage
+        // Ambil data transaksi dari localStorage
+        const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
+        tampilkanData(transaksiPemasukan);
 
-        // Inisialisasi
-        document.addEventListener('DOMContentLoaded', function() {
-            generateNoTransaksiMasuk();
-            setTanggalHariIni();
-            loadBarangOptions();
-            tambahBarangMasuk(); // Tambah satu barang default
-        });
-
-        function generateNoTransaksiMasuk() {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-            const noTransaksi = `MSK${year}${month}${day}${random}`;
-            document.getElementById('noTransaksiMasuk').value = noTransaksi;
-        }
-
-        function setTanggalHariIni() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('tanggalMasuk').value = today;
-        }
-
-        function loadBarangOptions() {
-            // Mengambil data barang dari localStorage
-            if (barangData.length === 0) {
-                alert('Tidak ada data barang. Silakan tambahkan barang di manajemen gudang.');
-                return;
-            }
-        }
-
-        function tambahBarangMasuk() {
-            barangMasukCounter++;
-            const container = document.getElementById('barang-masuk-container');
-            const barangDiv = document.createElement('div');
-            barangDiv.className = 'barang-item';
-            barangDiv.id = `barang-masuk-${barangMasukCounter}`;
+        function tampilkanData(transaksi) {
+            const tbody = document.getElementById('tbodyLaporan');
+            tbody.innerHTML = '';
             
-            // Buat opsi dropdown
-            let dropdownOptions = '<option value="">Pilih Barang</option>';
-            barangData.forEach(b => {
-                dropdownOptions += `<option value="${b.kode}" data-nama="${b.nama}" data-stok="${b.stok}" data-satuan="${b.satuan}">${b.kode} - ${b.nama} (Stok: ${b.stok} ${b.satuan})</option>`;
-            });
-            
-            barangDiv.innerHTML = `
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="kode-barang-masuk-${barangMasukCounter}">Kode Barang</label>
-                        <select id="kode-barang-masuk-${barangMasukCounter}" class="form-control kode-barang-masuk" onchange="updateNamaBarangMasuk(this)" required>
-                            ${dropdownOptions}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Nama Barang</label>
-                        <input type="text" class="form-control nama-barang-masuk" readonly>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Jumlah Masuk</label>
-                        <input type="number" class="form-control jumlah-masuk" min="1" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Satuan</label>
-                        <input type="text" class="form-control satuan" readonly>
-                    </div>
-                </div>
-            `;
-            
-            container.appendChild(barangDiv);
-        }
-
-        function updateNamaBarangMasuk(select) {
-            const barangItem = select.closest('.barang-item');
-            const selectedOption = select.options[select.selectedIndex];
-            
-            if (selectedOption.value) {
-                const namaBarang = selectedOption.dataset.nama || '';
-                const satuan = selectedOption.dataset.satuan || '';
+            transaksi.forEach((t, index) => {
+                const row = tbody.insertRow();
                 
-                barangItem.querySelector('.nama-barang-masuk').value = namaBarang;
-                barangItem.querySelector('.satuan').value = satuan;
-            } else {
-                barangItem.querySelector('.nama-barang-masuk').value = '';
-                barangItem.querySelector('.satuan').value = '';
-            }
-        }
-
-        function batal() {
-            if (confirm('Apakah Anda yakin ingin membatalkan dan mengosongkan form?')) {
-                document.getElementById('formPemasukan').reset();
-                const container = document.getElementById('barang-masuk-container');
-                container.innerHTML = '';
-                barangMasukCounter = 0;
-                generateNoTransaksiMasuk();
-                setTanggalHariIni();
-                tambahBarangMasuk();
-            }
-        }
-
-        document.getElementById('formPemasukan').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = {
-                noTransaksi: document.getElementById('noTransaksiMasuk').value, // Pastikan ini adalah noTransaksi
-                tanggalMasuk: document.getElementById('tanggalMasuk').value,
-                supplier: document.getElementById('supplier').value,
-                noSuratJalan: document.getElementById('noSuratJalan').value,
-                keterangan: document.getElementById('keteranganMasuk').value,
-                barang: []
-            };
-
-            // Ambil data barang masuk
-            const barangItems = document.querySelectorAll('.barang-item');
-            let isValid = true;
-            let hasData = false;
-
-            barangItems.forEach(item => {
-                const kodeBarang = item.querySelector('.kode-barang-masuk').value;
-                const jumlahMasuk = parseInt(item.querySelector('.jumlah-masuk').value) || 0;
-                const namaBarang = item.querySelector('.nama-barang-masuk').value;
-
-                if (!kodeBarang || jumlahMasuk <= 0 || !namaBarang) {
-                    if (kodeBarang || jumlahMasuk > 0 || namaBarang) {
-                        isValid = false;
-                    }
-                    return;
+                // Hitung total item berdasarkan jumlah barang
+                let totalItem = 0;
+                if (t.barang && Array.isArray(t.barang)) {
+                    totalItem = t.barang.reduce((sum, b) => sum + (parseInt(b.jumlahMasuk) || 0), 0);
                 }
 
-                hasData = true;
-                formData.barang.push({
-                    kodeBarang,
-                    jumlahMasuk,
-                    namaBarang
-                });
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${t.noTransaksi || 'Tidak ada nomor transaksi'}</td>
+                    <td>${t.tanggalMasuk || 'Tidak ada tanggal'}</td>
+                    <td><span class="${t.jenis === 'Pemasukan' ? 'status-masuk' : 'status-keluar'}">${t.jenis}</span></td>
+                    <td>${t.supplier || 'Tidak ada informasi'}</td>
+                    <td>${totalItem}</td> <!-- Menampilkan total item -->
+                    <td>
+                        <button onclick="lihatDetail('${t.noTransaksi}', '${t.jenis}')">Detail</button>
+                    </td>
+                `;
             });
+        }
 
-            if (!hasData) {
-                alert('Mohon tambahkan minimal satu barang untuk dimasukan!');
-                return;
-            }
-
-            if (!isValid) {
-                alert('Mohon lengkapi semua data barang dengan benar!');
-                return;
-            }
-
-            // Simpan transaksi ke localStorage
-            const transaksiPemasukan = JSON.parse(localStorage.getItem('transaksiPemasukan')) || [];
-            transaksiPemasukan.push(formData);
-            localStorage.setItem('transaksiPemasukan', JSON.stringify(transaksiPemasukan));
-
-            // Update stok barang di inventory
-            updateStokBarang(formData.barang);
-
-            alert('Transaksi pemasukan berhasil disimpan!');
-            batal();
-        });
-
-        function updateStokBarang(barangMasuk) {
-            // Ambil data inventory dari localStorage
-            let inventory = JSON.parse(localStorage.getItem('data-barang')) || [];
-            
-            barangMasuk.forEach(barang => {
-                // Cari barang di inventory
-                const index = inventory.findIndex(item => item.kode === barang.kodeBarang);
-                
-                if (index !== -1) {
-                    // Update stok barang
-                    inventory[index].stok += barang.jumlahMasuk;
-                } else {
-                    // Jika barang belum ada, tambahkan baru
-                    inventory.push({
-                        kode: barang.kodeBarang,
-                        nama: barang.namaBarang,
-                        stok: barang.jumlahMasuk,
-                        satuan: 'Pcs',
-                        lokasi: '',
-                    });
-                }
-            });
-            
-            // Simpan kembali ke localStorage
-            localStorage.setItem('data-barang', JSON.stringify(inventory));
+        function lihatDetail(noTransaksi, jenis) {
+            // Implementasikan fungsi untuk melihat detail transaksi
+            alert(`Detail untuk transaksi: ${noTransaksi}, Jenis: ${jenis}`);
         }
     </script>
 </body>
