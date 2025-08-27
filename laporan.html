@@ -16,7 +16,7 @@
 
     /* Navbar */
     .navbar {
-      background: #007bff; /* Biru PLN */
+      background: #2c3e50;
       padding: 12px 20px;
       display: flex;
       align-items: center;
@@ -44,7 +44,7 @@
 
     h2 {
       text-align: center;
-      color: #004085; /* Biru Gelap */
+      color: #2c3e50;
       margin-bottom: 20px;
     }
 
@@ -64,28 +64,17 @@
       flex: 1;
       margin: 10px;
       min-width: 200px;
-      border-top: 4px solid #007bff;
     }
 
     .card h3 {
       margin-bottom: 10px;
-      color: #004085;
+      color: #2c3e50;
     }
 
     .card p {
       font-size: 1.4em;
-      font-weight: bold;
+      color: #27ae60;
       margin: 0;
-    }
-
-    #totalPemasukan {
-      color: #28a745; /* Hijau */
-    }
-    #totalPengeluaran {
-      color: #dc3545; /* Merah */
-    }
-    #totalTransaksi {
-      color: #007bff; /* Biru PLN */
     }
 
     .table-container {
@@ -105,7 +94,7 @@
     }
 
     table th {
-      background: #007bff;
+      background: #2c3e50;
       color: white;
     }
 
@@ -114,16 +103,16 @@
     }
 
     table tr:hover {
-      background: #eaf2ff;
+      background: #f1f1f1;
     }
 
     .jenis-pemasukan {
-      color: #28a745;
+      color: #27ae60;
       font-weight: bold;
     }
 
     .jenis-pengeluaran {
-      color: #dc3545;
+      color: #e74c3c;
       font-weight: bold;
     }
   </style>
@@ -181,7 +170,7 @@
   </div>
 
   <script>
-    // Ambil data dari localStorage
+    // Ambil data dari DATA_CONFIG
     const transaksiPemasukan = JSON.parse(localStorage.getItem("transaksiPemasukan")) || [];
     const transaksiPengeluaran = JSON.parse(localStorage.getItem("transaksiPengeluaran")) || [];
     const semuaTransaksi = [
