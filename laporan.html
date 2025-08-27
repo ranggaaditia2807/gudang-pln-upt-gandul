@@ -3,229 +3,305 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Laporan Transaksi - Gudang PLN</title>
+  <title>Laporan Transaksi - Gudang PLN UPT Gandul</title>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
   <style>
+    /* ====== Style Dasar ====== */
     body {
       font-family: Arial, sans-serif;
-      background: #f4f6f9;
       margin: 0;
       padding: 0;
+      background: #f4f6f9;
       color: #333;
     }
 
-    /* Navbar */
-    .navbar {
-      background: #2c3e50;
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .navbar h2 {
-      color: #fff;
-      margin: 0;
-    }
-    .navbar a {
-      color: #fff;
-      margin-left: 15px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-    .navbar a:hover {
-      text-decoration: underline;
+    header {
+      background: #007bff;
+      color: white;
+      text-align: center;
+      padding: 20px;
     }
 
-    .container {
+    main {
       padding: 20px;
-      max-width: 1200px;
+      max-width: 1100px;
       margin: auto;
     }
 
-    h2 {
-      text-align: center;
-      color: #2c3e50;
-      margin-bottom: 20px;
+    h1, h2 {
+      margin: 0 0 15px 0;
     }
 
-    .card-container {
+    /* ===== Ringkasan ===== */
+    .ringkasan {
+      margin-bottom: 30px;
+    }
+
+    .stats {
       display: flex;
-      justify-content: space-around;
-      margin-bottom: 20px;
+      gap: 20px;
       flex-wrap: wrap;
     }
 
-    .card {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      text-align: center;
+    .stat {
       flex: 1;
-      margin: 10px;
-      min-width: 200px;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
-    .card h3 {
+    .stat i {
+      font-size: 30px;
       margin-bottom: 10px;
-      color: #2c3e50;
+      color: #007bff;
     }
 
-    .card p {
-      font-size: 1.4em;
-      color: #27ae60;
+    .stat p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .stat h3 {
       margin: 0;
+      font-size: 24px;
+      color: #333;
     }
 
-    .table-container {
-      overflow-x: auto;
-    }
-
+    /* ===== Tabel ===== */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      margin-top: 15px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
 
-    table th, table td {
-      padding: 12px;
-      border: 1px solid #ddd;
-      text-align: center;
-    }
-
-    table th {
-      background: #2c3e50;
+    thead {
+      background: #007bff;
       color: white;
     }
 
-    table tr:nth-child(even) {
-      background: #f9f9f9;
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      font-size: 14px;
     }
 
-    table tr:hover {
+    tr:hover {
       background: #f1f1f1;
     }
 
-    .jenis-pemasukan {
-      color: #27ae60;
-      font-weight: bold;
+    /* ===== Tombol Export ===== */
+    .export-btns {
+      margin: 20px 0;
+      text-align: right;
     }
 
-    .jenis-pengeluaran {
-      color: #e74c3c;
-      font-weight: bold;
+    .btn {
+      display: inline-block;
+      background: #007bff;
+      color: white;
+      padding: 10px 15px;
+      margin-left: 10px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    .btn:hover {
+      background: #0056b3;
+    }
+
+    .btn i {
+      margin-right: 5px;
     }
   </style>
 </head>
 <body>
-  <!-- Navbar -->
-  <div class="navbar">
-    <h2>Gudang PLN</h2>
-    <div>
-      <a href="index.html">Home</a>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="barang.html">Barang</a>
-      <a href="transaksi.html">Transaksi</a>
-      <a href="laporan.html">Laporan</a>
-    </div>
-  </div>
+  <header>
+    <h1>Laporan Transaksi Gudang PLN UPT Gandul</h1>
+  </header>
 
-  <div class="container">
-    <h2>Laporan Transaksi Gudang</h2>
+  <main>
+    <section class="ringkasan">
+      <h2>Ringkasan</h2>
+      <div class="stats">
+        <div class="stat">
+          <i class="fas fa-exchange-alt"></i>
+          <p>Total Transaksi</p>
+          <h3 id="totalTransaksi">0</h3>
+        </div>
+        <div class="stat">
+          <i class="fas fa-arrow-down"></i>
+          <p>Total Pemasukan</p>
+          <h3 id="totalPemasukan">0</h3>
+        </div>
+        <div class="stat">
+          <i class="fas fa-arrow-up"></i>
+          <p>Total Pengeluaran</p>
+          <h3 id="totalPengeluaran">0</h3>
+        </div>
+      </div>
+    </section>
 
-    <!-- Ringkasan -->
-    <div class="card-container">
-      <div class="card">
-        <h3>Total Transaksi</h3>
-        <p id="totalTransaksi">0</p>
-      </div>
-      <div class="card">
-        <h3>Total Pemasukan</h3>
-        <p id="totalPemasukan">0</p>
-      </div>
-      <div class="card">
-        <h3>Total Pengeluaran</h3>
-        <p id="totalPengeluaran">0</p>
-      </div>
-    </div>
+    <section class="tabel">
+      <h2>Detail Transaksi</h2>
 
-    <!-- Tabel Laporan -->
-    <div class="table-container">
-      <table id="laporanTable">
+      <div class="export-btns">
+        <a href="#" class="btn" id="exportExcel"><i class="fas fa-file-excel"></i> Export Excel</a>
+        <a href="#" class="btn" id="exportPDF"><i class="fas fa-file-pdf"></i> Export PDF</a>
+      </div>
+
+      <table id="tabelLaporan">
         <thead>
           <tr>
-            <th>No</th>
             <th>Tanggal</th>
             <th>Jenis</th>
-            <th>Barang</th>
+            <th>Kode Barang</th>
+            <th>Nama Barang</th>
             <th>Jumlah</th>
-            <th>Keterangan</th>
+            <th>Satuan</th>
+            <th>Lokasi</th>
           </tr>
         </thead>
         <tbody>
-          <!-- Data transaksi akan dimuat di sini -->
+          <!-- Data transaksi akan ditampilkan di sini -->
         </tbody>
       </table>
-    </div>
-  </div>
+    </section>
+  </main>
+
+  <!-- jsPDF & SheetJS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
   <script>
-    // Ambil data dari DATA_CONFIG
-    const transaksiPemasukan = JSON.parse(localStorage.getItem("transaksiPemasukan")) || [];
-    const transaksiPengeluaran = JSON.parse(localStorage.getItem("transaksiPengeluaran")) || [];
-    const semuaTransaksi = [
-      ...transaksiPemasukan.map(t => ({ ...t, jenis: "Pemasukan" })),
-      ...transaksiPengeluaran.map(t => ({ ...t, jenis: "Pengeluaran" }))
-    ];
+    // ===== Konfigurasi Data =====
+    const DATA_CONFIG = {
+      STORAGE_KEYS: {
+        BARANG: 'barang',
+        TRANSAKSI_PEMASUKAN: 'transaksiPemasukan',
+        TRANSAKSI_PENGELUARAN: 'transaksiPengeluaran',
+        LAPORAN: 'laporan'
+      },
+      DEFAULT_BARANG: [
+        { kode: 'BRG001', nama: 'Laptop Dell', stok: 10, satuan: 'unit', lokasi: 'Rak A1' },
+        { kode: 'BRG002', nama: 'Mouse Wireless', stok: 5, satuan: 'pcs', lokasi: 'Rak B2' },
+        { kode: 'BRG003', nama: 'Keyboard Mechanical', stok: 2, satuan: 'pcs', lokasi: 'Rak B3' }
+      ],
+      getDataBarang() {
+        return JSON.parse(localStorage.getItem(this.STORAGE_KEYS.BARANG)) || [];
+      },
+      saveDataBarang(barang) {
+        localStorage.setItem(this.STORAGE_KEYS.BARANG, JSON.stringify(barang));
+      },
+      initData() {
+        if (!localStorage.getItem(this.STORAGE_KEYS.BARANG)) {
+          this.saveDataBarang(this.DEFAULT_BARANG);
+        }
+      },
+      sinkronisasiStok() {
+        const barang = this.getDataBarang();
+        const pemasukan = JSON.parse(localStorage.getItem(this.STORAGE_KEYS.TRANSAKSI_PEMASUKAN)) || [];
+        const pengeluaran = JSON.parse(localStorage.getItem(this.STORAGE_KEYS.TRANSAKSI_PENGELUARAN)) || [];
 
-    // Urutkan berdasarkan tanggal terbaru
-    semuaTransaksi.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
+        const stokBaru = barang.map(item => {
+          let stokAkhir = item.stok;
+          pemasukan.forEach(t => t.barang.forEach(b => {
+            if (b.kodeBarang === item.kode) stokAkhir += b.jumlah || 0;
+          }));
+          pengeluaran.forEach(t => t.barang.forEach(b => {
+            if (b.kodeBarang === item.kode) stokAkhir -= b.jumlahKeluar || 0;
+          }));
+          return { ...item, stok: Math.max(0, stokAkhir) };
+        });
 
-    const laporanTable = document.querySelector("#laporanTable tbody");
+        this.saveDataBarang(stokBaru);
+        return stokBaru;
+      }
+    };
 
-    // Isi tabel laporan
-    semuaTransaksi.forEach((t, index) => {
-      t.barang.forEach(barang => {
-        const row = `
-          <tr>
-            <td>${index + 1}</td>
-            <td>${t.tanggal}</td>
-            <td class="${t.jenis === "Pemasukan" ? "jenis-pemasukan" : "jenis-pengeluaran"}">${t.jenis}</td>
+    // ===== Laporan =====
+    function tampilkanLaporan() {
+      const pemasukan = JSON.parse(localStorage.getItem(DATA_CONFIG.STORAGE_KEYS.TRANSAKSI_PEMASUKAN)) || [];
+      const pengeluaran = JSON.parse(localStorage.getItem(DATA_CONFIG.STORAGE_KEYS.TRANSAKSI_PENGELUARAN)) || [];
+
+      const semuaTransaksi = [
+        ...pemasukan.map(t => ({ ...t, jenis: 'Pemasukan' })),
+        ...pengeluaran.map(t => ({ ...t, jenis: 'Pengeluaran' }))
+      ];
+
+      const tbody = document.querySelector("#tabelLaporan tbody");
+      tbody.innerHTML = "";
+
+      semuaTransaksi.forEach(transaksi => {
+        transaksi.barang.forEach(barang => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${transaksi.tanggal}</td>
+            <td>${transaksi.jenis}</td>
+            <td>${barang.kodeBarang}</td>
             <td>${barang.namaBarang}</td>
-            <td>${t.jenis === "Pemasukan" ? barang.jumlah : barang.jumlahKeluar}</td>
-            <td>${t.keterangan || "-"}</td>
-          </tr>
-        `;
-        laporanTable.insertAdjacentHTML("beforeend", row);
+            <td>${barang.jumlah || barang.jumlahKeluar || 0}</td>
+            <td>${barang.satuan || '-'}</td>
+            <td>${barang.lokasi || '-'}</td>
+          `;
+          tbody.appendChild(tr);
+        });
       });
-    });
 
-    // Update ringkasan
+      updateRingkasan(semuaTransaksi);
+    }
+
     function updateRingkasan(transaksi) {
       const totalTransaksi = transaksi.length;
       let totalPemasukan = 0;
       let totalPengeluaran = 0;
 
       transaksi.forEach(t => {
-        if (t.barang && Array.isArray(t.barang)) {
-          if (t.jenis === "Pemasukan") {
-            totalPemasukan += t.barang.reduce(
-              (sum, b) => sum + (parseInt(b.jumlah) || 0), 0
-            );
-          } else if (t.jenis === "Pengeluaran") {
-            totalPengeluaran += t.barang.reduce(
-              (sum, b) => sum + (parseInt(b.jumlahKeluar) || 0), 0
-            );
+        if (t.barang) {
+          if (t.jenis === 'Pemasukan') {
+            totalPemasukan += t.barang.reduce((sum, b) => sum + (parseInt(b.jumlah) || 0), 0);
+          } else {
+            totalPengeluaran += t.barang.reduce((sum, b) => sum + (parseInt(b.jumlahKeluar) || 0), 0);
           }
         }
       });
 
-      document.getElementById("totalTransaksi").textContent = totalTransaksi;
-      document.getElementById("totalPemasukan").textContent = totalPemasukan;
-      document.getElementById("totalPengeluaran").textContent = totalPengeluaran;
+      document.getElementById('totalTransaksi').textContent = totalTransaksi;
+      document.getElementById('totalPemasukan').textContent = totalPemasukan;
+      document.getElementById('totalPengeluaran').textContent = totalPengeluaran;
     }
 
-    updateRingkasan(semuaTransaksi);
+    // ===== Export =====
+    document.getElementById("exportExcel").addEventListener("click", () => {
+      const wb = XLSX.utils.table_to_book(document.getElementById("tabelLaporan"), {sheet:"Laporan"});
+      XLSX.writeFile(wb, "laporan_transaksi.xlsx");
+    });
+
+    document.getElementById("exportPDF").addEventListener("click", () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text("Laporan Transaksi Gudang PLN UPT Gandul", 14, 15);
+      doc.autoTable({ html: '#tabelLaporan', startY: 20 });
+      doc.save("laporan_transaksi.pdf");
+    });
+
+    // ===== Init =====
+    document.addEventListener("DOMContentLoaded", function() {
+      DATA_CONFIG.initData();
+      DATA_CONFIG.sinkronisasiStok();
+      tampilkanLaporan();
+    });
   </script>
 </body>
 </html>
