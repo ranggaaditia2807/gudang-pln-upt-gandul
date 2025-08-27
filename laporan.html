@@ -2,65 +2,61 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard Gudang PLN</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background: #f4f6f9;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .card-container {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-        .card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            width: 250px;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .card h2 {
-            margin: 10px 0;
-            font-size: 2em;
-            color: #007bff;
-        }
-        .card p {
-            margin: 0;
-            font-size: 1.1em;
-            color: #555;
-        }
-    </style>
+    <title>Laporan Transaksi - Gudang PLN UPT Gandul</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <header>
+        <h1>Laporan Transaksi Gudang PLN UPT Gandul</h1>
+    </header>
 
-    <h1>Dashboard Gudang PLN</h1>
+    <main>
+        <section class="ringkasan">
+            <h2>Ringkasan</h2>
+            <div class="stats">
+                <div class="stat">
+                    <i class="fas fa-exchange-alt"></i>
+                    <p>Total Transaksi</p>
+                    <h3 id="totalTransaksi">0</h3>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-arrow-down"></i>
+                    <p>Total Pemasukan</p>
+                    <h3 id="totalPemasukan">0</h3>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-arrow-up"></i>
+                    <p>Total Pengeluaran</p>
+                    <h3 id="totalPengeluaran">0</h3>
+                </div>
+            </div>
+        </section>
 
-    <div class="card-container">
-        <div class="card">
-            <p>Total Item</p>
-            <h2 id="totalItem">0</h2>
-        </div>
-        <div class="card">
-            <p>Total Pemasukan</p>
-            <h2 id="totalPemasukan">0</h2>
-        </div>
-        <div class="card">
-            <p>Total Pengeluaran</p>
-            <h2 id="totalPengeluaran">0</h2>
-        </div>
-    </div>
+        <section class="tabel">
+            <h2>Detail Transaksi</h2>
+            <table id="tabelLaporan">
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th>Jenis</th>
+                        <th>Kode Barang</th>
+                        <th>Nama Barang</th>
+                        <th>Jumlah</th>
+                        <th>Satuan</th>
+                        <th>Lokasi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data transaksi akan ditampilkan di sini -->
+                </tbody>
+            </table>
+        </section>
+    </main>
 
     <script>
-    // ================= CONFIG JS ===================
+    // ===== Konfigurasi Data Terpusat =====
     const DATA_CONFIG = {
         STORAGE_KEYS: {
             BARANG: 'barang',
@@ -78,29 +74,36 @@
         getDataBarang: function() {
             return JSON.parse(localStorage.getItem(this.STORAGE_KEYS.BARANG)) || [];
         },
+        
         saveDataBarang: function(barang) {
             localStorage.setItem(this.STORAGE_KEYS.BARANG, JSON.stringify(barang));
         },
+        
         initData: function() {
             if (!localStorage.getItem(this.STORAGE_KEYS.BARANG)) {
                 this.saveDataBarang(this.DEFAULT_BARANG);
                 console.log("Data barang diinisialisasi dengan data default");
             }
         },
+        
         sinkronisasiStok: function() {
             const barang = this.getDataBarang();
             const transaksiPemasukan = JSON.parse(localStorage.getItem(this.STORAGE_KEYS.TRANSAKSI_PEMASUKAN)) || [];
             const transaksiPengeluaran = JSON.parse(localStorage.getItem(this.STORAGE_KEYS.TRANSAKSI_PENGELUARAN)) || [];
             
+            console.log("Memulai sinkronisasi stok terpusat...");
+            
             const stokBaru = barang.map(item => {
                 let stokAkhir = item.stok;
+                
                 transaksiPemasukan.forEach(transaksi => {
                     transaksi.barang.forEach(barangTransaksi => {
                         if (barangTransaksi.kodeBarang === item.kode) {
-                            stokAkhir += barangTransaksi.jumlahMasuk || 0;
+                            stokAkhir += barangTransaksi.jumlah || 0;
                         }
                     });
                 });
+                
                 transaksiPengeluaran.forEach(transaksi => {
                     transaksi.barang.forEach(barangTransaksi => {
                         if (barangTransaksi.kodeBarang === item.kode) {
@@ -108,53 +111,79 @@
                         }
                     });
                 });
+                
                 return { ...item, stok: Math.max(0, stokAkhir) };
             });
+            
             this.saveDataBarang(stokBaru);
+            console.log("Sinkronisasi stok selesai:", stokBaru);
             return stokBaru;
-        },
-        updateStokBarang: function(kodeBarang, jumlah, jenis) {
-            const barang = this.getDataBarang();
-            const itemIndex = barang.findIndex(b => b.kode === kodeBarang);
-            if (itemIndex === -1) return false;
-            if (jenis === 'pengeluaran') barang[itemIndex].stok -= jumlah;
-            else if (jenis === 'pemasukan') barang[itemIndex].stok += jumlah;
-            barang[itemIndex].stok = Math.max(0, barang[itemIndex].stok);
-            this.saveDataBarang(barang);
-            return true;
-        },
-        getTotalBarang: function() {
-            const barang = this.getDataBarang();
-            return barang.reduce((total, item) => total + (item.stok || 0), 0);
-        },
-        getTotalPemasukan: function() {
-            const transaksiPemasukan = JSON.parse(localStorage.getItem(this.STORAGE_KEYS.TRANSAKSI_PEMASUKAN)) || [];
-            let total = 0;
-            transaksiPemasukan.forEach(transaksi => {
-                transaksi.barang.forEach(b => { total += b.jumlahMasuk || 0; });
-            });
-            return total;
-        },
-        getTotalPengeluaran: function() {
-            const transaksiPengeluaran = JSON.parse(localStorage.getItem(this.STORAGE_KEYS.TRANSAKSI_PENGELUARAN)) || [];
-            let total = 0;
-            transaksiPengeluaran.forEach(transaksi => {
-                transaksi.barang.forEach(b => { total += b.jumlahKeluar || 0; });
-            });
-            return total;
         }
     };
 
-    // Inisialisasi dan tampilkan dashboard
-    document.addEventListener('DOMContentLoaded', function() {
+    // ===== Laporan =====
+    function tampilkanLaporan() {
+        const transaksiPemasukan = JSON.parse(localStorage.getItem(DATA_CONFIG.STORAGE_KEYS.TRANSAKSI_PEMASUKAN)) || [];
+        const transaksiPengeluaran = JSON.parse(localStorage.getItem(DATA_CONFIG.STORAGE_KEYS.TRANSAKSI_PENGELUARAN)) || [];
+        
+        const semuaTransaksi = [
+            ...transaksiPemasukan.map(t => ({ ...t, jenis: 'Pemasukan' })),
+            ...transaksiPengeluaran.map(t => ({ ...t, jenis: 'Pengeluaran' }))
+        ];
+
+        const tbody = document.querySelector("#tabelLaporan tbody");
+        tbody.innerHTML = "";
+
+        semuaTransaksi.forEach(transaksi => {
+            transaksi.barang.forEach(barang => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${transaksi.tanggal}</td>
+                    <td>${transaksi.jenis}</td>
+                    <td>${barang.kodeBarang}</td>
+                    <td>${barang.namaBarang}</td>
+                    <td>${barang.jumlah || barang.jumlahKeluar || 0}</td>
+                    <td>${barang.satuan || '-'}</td>
+                    <td>${barang.lokasi || '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        });
+
+        updateRingkasan(semuaTransaksi);
+    }
+
+    function updateRingkasan(transaksi) {
+        const totalTransaksi = transaksi.length;
+        let totalPemasukan = 0;
+        let totalPengeluaran = 0;
+
+        transaksi.forEach(t => {
+            if (t.barang && Array.isArray(t.barang)) {
+                if (t.jenis === 'Pemasukan') {
+                    totalPemasukan += t.barang.reduce(
+                        (sum, b) => sum + (parseInt(b.jumlah) || 0),
+                        0
+                    );
+                } else if (t.jenis === 'Pengeluaran') {
+                    totalPengeluaran += t.barang.reduce(
+                        (sum, b) => sum + (parseInt(b.jumlahKeluar) || 0),
+                        0
+                    );
+                }
+            }
+        });
+
+        document.getElementById('totalTransaksi').textContent = totalTransaksi;
+        document.getElementById('totalPemasukan').textContent = totalPemasukan;
+        document.getElementById('totalPengeluaran').textContent = totalPengeluaran;
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
         DATA_CONFIG.initData();
-        document.getElementById("totalItem").textContent = DATA_CONFIG.getTotalBarang();
-        document.getElementById("totalPemasukan").textContent = DATA_CONFIG.getTotalPemasukan();
-        document.getElementById("totalPengeluaran").textContent = DATA_CONFIG.getTotalPengeluaran();
+        DATA_CONFIG.sinkronisasiStok();
+        tampilkanLaporan();
     });
-
-    window.DataConfig = DATA_CONFIG;
     </script>
-
 </body>
 </html>
