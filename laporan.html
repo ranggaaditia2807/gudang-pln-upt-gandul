@@ -44,6 +44,63 @@
       text-decoration: underline;
     }
 
+    /* === Halaman Home === */
+    .home-container {
+      padding: 20px;
+    }
+
+    .home-title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .home-description {
+      font-size: 1.1rem;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    /* === Halaman Dashboard === */
+    .dashboard-container {
+      padding: 20px;
+    }
+
+    .dashboard-title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .dashboard-stats {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 20px;
+    }
+
+    .stat-card {
+      background-color: #fff;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      text-align: center;
+      width: 200px;
+    }
+
+    .stat-card h3 {
+      margin: 0;
+      color: #0d6efd;
+    }
+
+    .stat-card p {
+      color: #555;
+      margin-top: 5px;
+    }
+
     /* === Container Laporan === */
     .container {
       padding: 20px;
@@ -84,15 +141,27 @@
     .laporan-table tr:nth-child(even) {
       background: #f9f9f9;
     }
+
+    /* === Footer === */
+    footer {
+      background: #0d6efd;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
   </style>
 </head>
 <body>
-    <div class="header">
+    <div class="navbar">
+        <div class="nav-brand">Gudang UPT Gandul</div>
         <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="manajemen-gudang.html">Transaksi</a>
-            <a href="transaksi.html">Laporan</a>
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="manajemen-gudang.html" class="nav-link">Transaksi</a>
+            <a href="transaksi.html" class="nav-link active">Laporan</a>
         </div>
     </div>
 
@@ -154,7 +223,10 @@
       renderTransaksi(pengeluaran, 'Pengeluaran');
     });
   </script>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Gudang UPT Gandul | Semua hak cipta dilindungi</p>
+  </footer>
 </body>
 </html>
-
-
