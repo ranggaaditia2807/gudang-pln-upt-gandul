@@ -5,263 +5,354 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manajemen Gudang</title>
   <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-        }
-        .header {
-            background-color: #005baa;
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-        .logo img {
-            height: 40px;
-            margin-right: 10px;
-        }
-        .nav-links {
-            display: flex;
-            gap: 25px;
-        }
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 5px 0;
-            position: relative;
-        }
-        .nav-links a:hover:after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: white;
-            bottom: 0;
-            left: 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-        .card {
-            background: white;
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .card-title {
-            margin-top: 0;
-            color: #005baa;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        th {
-            background-color: #f0f7ff;
-            color: #005baa;
-            font-weight: 600;
-        }
-        tr:hover {
-            background-color: #f8faff;
-        }
-        .btn {
-            padding: 8px 15px;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        .btn-primary {
-            background-color: #005baa;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #004a8d;
-        }
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-        .btn-success {
-            background-color: #28a745;
-            color: white;
-        }
-        .btn-success:hover {
-            background-color: #218838;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            width: 500px;
-            max-width: 90%;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .modal-title {
-            margin: 0;
-            color: #005baa;
-        }
-        .close {
-            font-size: 24px;
-            cursor: pointer;
-            color: #777;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .form-control:focus {
-            border-color: #005baa;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(0,91,170,0.2);
-        }
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            justify-content: flex-end;
-        }
-    </style>
+    /* Reset dan Global */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    /* Header */
+    .header {
+      background-color: #005baa;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    /* Navigasi */
+    .nav-links {
+      display: flex;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 5px 0;
+      position: relative;
+      transition: 0.3s;
+    }
+
+    .nav-links a:hover:after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 2px;
+      background: white;
+      bottom: 0;
+      left: 0;
+    }
+
+    /* Container & Card */
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .card-title {
+      margin-top: 0;
+      color: #005baa;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 10px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    /* Tabel */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: #f0f7ff;
+      color: #005baa;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: #f8faff;
+    }
+
+    /* Tombol */
+    .btn {
+      padding: 8px 15px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background-color: #005baa;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #004a8d;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+    }
+
+    .btn-success {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #218838;
+    }
+
+    /* Search Bar */
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .search-bar input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      width: 500px;
+      max-width: 90%;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      margin: 0;
+      color: #005baa;
+    }
+
+    .close {
+      font-size: 24px;
+      cursor: pointer;
+      color: #777;
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .form-control:focus {
+      border-color: #005baa;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0,91,170,0.2);
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: flex-end;
+    }
+  </style>
 </head>
 <body>
-  <h1>Manajemen Gudang</h1>
+  <div class="header">
+    <div class="logo">
+      <img src="logo.png" alt="Logo"> Manajemen Gudang
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Dashboard</a>
+      <a href="manajemen-gudang.html">Manajemen</a>
+      <a href="pemasukan-barang.html">Pemasukan</a>
+      <a href="pengeluaran-barang.html">Pengeluaran</a>
+      <a href="laporan.html">Laporan</a>
+    </div>
+  </div>
 
-  <!-- Form Tambah Barang -->
-  <section>
-    <h2>Tambah Barang</h2>
-    <form id="form-tambah-barang">
-      <label for="kodeBarang">Kode Barang</label>
-      <input type="text" id="kodeBarang" name="kodeBarang" required>
+  <div class="container">
+    <div class="card">
+      <h2 class="card-title">Daftar Barang</h2>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Cari barang...">
+        <button class="btn btn-primary" id="btnTambah">+ Tambah Barang</button>
+      </div>
+      <table id="barangTable">
+        <thead>
+          <tr>
+            <th>Kode</th>
+            <th>Nama Barang</th>
+            <th>Jenis Material</th>
+            <th>Stok</th>
+            <th>Satuan</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>BRG001</td>
+            <td>Kabel Listrik</td>
+            <td>Tembaga</td>
+            <td>120</td>
+            <td>Roll</td>
+            <td>
+              <button class="btn btn-success">Edit</button>
+              <button class="btn btn-danger">Hapus</button>
+            </td>
+          </tr>
+          <tr>
+            <td>BRG002</td>
+            <td>Meteran</td>
+            <td>Plastik</td>
+            <td>75</td>
+            <td>Pcs</td>
+            <td>
+              <button class="btn btn-success">Edit</button>
+              <button class="btn btn-danger">Hapus</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-      <label for="namaBarang">Nama Barang</label>
-      <input type="text" id="namaBarang" name="namaBarang" required>
-
-      <!-- Tambahan Jenis Material -->
-      <label for="jenisMaterial">Jenis Material</label>
-      <input type="text" id="jenisMaterial" name="jenisMaterial" placeholder="Masukkan jenis material" required>
-
-      <label for="jumlahBarang">Jumlah</label>
-      <input type="number" id="jumlahBarang" name="jumlahBarang" required>
-
-      <label for="hargaBarang">Harga</label>
-      <input type="number" id="hargaBarang" name="hargaBarang" required>
-
-      <button type="submit">Tambah Barang</button>
-    </form>
-  </section>
-
-  <!-- Daftar Barang -->
-  <section>
-    <h2>Daftar Barang</h2>
-
-    <!-- Search Box -->
-    <input type="text" id="searchInput" placeholder="Cari barang..." style="margin-bottom:10px; padding:8px; width:100%; border:1px solid #ccc; border-radius:6px;">
-
-    <table id="tabel-barang">
-      <thead>
-        <tr>
-          <th>Kode Barang</th>
-          <th>Nama Barang</th>
-          <th>Jenis Material</th>
-          <th>Jumlah</th>
-          <th>Harga</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Data akan muncul di sini -->
-      </tbody>
-    </table>
-  </section>
+  <!-- Modal Tambah Barang -->
+  <div class="modal" id="modalTambah">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Tambah Barang</h3>
+        <span class="close" id="closeModal">&times;</span>
+      </div>
+      <form>
+        <div class="form-group">
+          <label>Kode Barang</label>
+          <input type="text" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Nama Barang</label>
+          <input type="text" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Jenis Material</label>
+          <input type="text" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Stok</label>
+          <input type="number" class="form-control">
+        </div>
+        <div class="form-group">
+          <label>Satuan</label>
+          <input type="text" class="form-control">
+        </div>
+        <div class="action-buttons">
+          <button type="submit" class="btn btn-primary">Simpan</button>
+          <button type="button" class="btn btn-danger" id="cancelModal">Batal</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script>
-    const form = document.getElementById("form-tambah-barang");
-    const tabelBarang = document.querySelector("#tabel-barang tbody");
-
-    // Tambah Barang
-    form.addEventListener("submit", function(event) {
-      event.preventDefault();
-
-      const kodeBarang = document.getElementById("kodeBarang").value;
-      const namaBarang = document.getElementById("namaBarang").value;
-      const jenisMaterial = document.getElementById("jenisMaterial").value;
-      const jumlahBarang = document.getElementById("jumlahBarang").value;
-      const hargaBarang = document.getElementById("hargaBarang").value;
-
-      const row = tabelBarang.insertRow();
-      row.insertCell(0).textContent = kodeBarang;
-      row.insertCell(1).textContent = namaBarang;
-      row.insertCell(2).textContent = jenisMaterial;
-      row.insertCell(3).textContent = jumlahBarang;
-      row.insertCell(4).textContent = hargaBarang;
-
-      form.reset();
-    });
-
-    // Fungsi Search Barang
-    document.getElementById("searchInput").addEventListener("keyup", function() {
+    // Search Function
+    document.getElementById('searchInput').addEventListener('keyup', function() {
       let filter = this.value.toLowerCase();
-      let rows = document.querySelectorAll("#tabel-barang tbody tr");
-
+      let rows = document.querySelectorAll('#barangTable tbody tr');
       rows.forEach(row => {
-        let text = row.textContent.toLowerCase();
-        row.style.display = text.includes(filter) ? "" : "none";
+        let text = row.innerText.toLowerCase();
+        row.style.display = text.includes(filter) ? '' : 'none';
       });
     });
+
+    // Modal Tambah Barang
+    const modal = document.getElementById('modalTambah');
+    const btnTambah = document.getElementById('btnTambah');
+    const closeModal = document.getElementById('closeModal');
+    const cancelModal = document.getElementById('cancelModal');
+
+    btnTambah.onclick = () => modal.style.display = 'flex';
+    closeModal.onclick = () => modal.style.display = 'none';
+    cancelModal.onclick = () => modal.style.display = 'none';
+    window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; };
   </script>
 </body>
 </html>
