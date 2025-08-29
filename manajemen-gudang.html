@@ -8,247 +8,55 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-        }
-        .header {
-            background-color: #005baa;
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-        .logo img {
-            height: 40px;
-            margin-right: 10px;
-        }
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            align-items: center;
-        }
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 5px 0;
-            position: relative;
-        }
-        .nav-links a:hover::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: white;
-            bottom: 0;
-            left: 0;
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .user-role {
-            background: rgba(255,255,255,0.2);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-        }
-        .logout-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-        .card {
-            background: white;
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .card-title {
-            margin-top: 0;
-            color: #005baa;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        .search-bar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            align-items: center;
-        }
-        .search-bar input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        th {
-            background-color: #f0f7ff;
-            color: #005baa;
-            font-weight: 600;
-        }
-        tr:hover {
-            background-color: #f8faff;
-        }
-        .btn {
-            padding: 8px 15px;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        .btn-primary {
-            background-color: #005baa;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #004a8d;
-        }
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-        .btn-success {
-            background-color: #28a745;
-            color: white;
-        }
-        .btn-success:hover {
-            background-color: #218838;
-        }
-        .btn-secondary {
-            background-color: #6c757d;
-            color: white;
-        }
-        .btn-secondary:hover {
-            background-color: #5a6268;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            width: 500px;
-            max-width: 90%;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .modal-title {
-            margin: 0;
-            color: #005baa;
-        }
-        .close {
-            font-size: 24px;
-            cursor: pointer;
-            color: #777;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .form-control:focus {
-            border-color: #005baa;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(0,91,170,0.2);
-        }
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            justify-content: flex-end;
-        }
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #666;
-        }
-        .error-message {
-            color: #dc3545;
-            background: #fff5f5;
-            padding: 10px;
-            border-radius: 4px;
-            margin: 10px 0;
-            border-left: 4px solid #dc3545;
-        }
-        .success-message {
-            color: #28a745;
-            background: #f8fff9;
-            padding: 10px;
-            border-radius: 4px;
-            margin: 10px 0;
-            border-left: 4px solid #28a745;
-        }
+        /* (style tetap sama dengan yang kamu buat sebelumnya) */
+        body {font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;margin:0;padding:0;background:#f8f9fa;}
+        .header{background:#005baa;color:white;padding:15px 30px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 5px rgba(0,0,0,0.1);}
+        .logo{font-size:24px;font-weight:bold;display:flex;align-items:center;}
+        .logo img{height:40px;margin-right:10px;}
+        .nav-links{display:flex;gap:25px;align-items:center;}
+        .nav-links a{color:white;text-decoration:none;font-weight:500;padding:5px 0;position:relative;}
+        .nav-links a:hover::after{content:'';position:absolute;width:100%;height:2px;background:white;bottom:0;left:0;}
+        .user-info{display:flex;align-items:center;gap:15px;}
+        .user-role{background:rgba(255,255,255,0.2);padding:4px 12px;border-radius:20px;font-size:12px;}
+        .logout-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.3);color:white;padding:5px 15px;border-radius:4px;cursor:pointer;font-size:14px;}
+        .logout-btn:hover{background:rgba(255,255,255,0.2);}
+        .container{max-width:1200px;margin:30px auto;padding:0 20px;}
+        .card{background:white;border-radius:8px;padding:25px;margin-bottom:25px;box-shadow:0 2px 10px rgba(0,0,0,0.05);}
+        .card-title{margin-top:0;color:#005baa;border-bottom:1px solid #eee;padding-bottom:10px;}
+        .search-bar{display:flex;gap:10px;margin-bottom:20px;align-items:center;}
+        .search-bar input{flex:1;padding:10px;border:1px solid #ddd;border-radius:4px;}
+        table{width:100%;border-collapse:collapse;margin-top:15px;}
+        th,td{padding:12px 15px;text-align:left;border-bottom:1px solid #eee;}
+        th{background:#f0f7ff;color:#005baa;font-weight:600;}
+        tr:hover{background:#f8faff;}
+        .btn{padding:8px 15px;border-radius:4px;border:none;cursor:pointer;font-weight:500;transition:all .3s;}
+        .btn-primary{background:#005baa;color:white;}
+        .btn-primary:hover{background:#004a8d;}
+        .btn-danger{background:#dc3545;color:white;}
+        .btn-danger:hover{background:#c82333;}
+        .btn-success{background:#28a745;color:white;}
+        .btn-success:hover{background:#218838;}
+        .btn-secondary{background:#6c757d;color:white;}
+        .btn-secondary:hover{background:#5a6268;}
+        .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:1000;}
+        .modal-content{background:white;padding:25px;border-radius:8px;width:500px;max-width:90%;box-shadow:0 5px 15px rgba(0,0,0,0.2);}
+        .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+        .modal-title{margin:0;color:#005baa;}
+        .close{font-size:24px;cursor:pointer;color:#777;}
+        .form-group{margin-bottom:20px;}
+        .form-group label{display:block;margin-bottom:8px;font-weight:500;}
+        .form-control{width:100%;padding:10px;border:1px solid #ddd;border-radius:4px;box-sizing:border-box;}
+        .form-control:focus{border-color:#005baa;outline:none;box-shadow:0 0 0 2px rgba(0,91,170,0.2);}
+        .action-buttons{display:flex;gap:10px;margin-top:20px;justify-content:flex-end;}
+        .loading{text-align:center;padding:20px;color:#666;}
+        .error-message{color:#dc3545;background:#fff5f5;padding:10px;border-radius:4px;margin:10px 0;border-left:4px solid #dc3545;}
+        .success-message{color:#28a745;background:#f8fff9;padding:10px;border-radius:4px;margin:10px 0;border-left:4px solid #28a745;}
     </style>
 </head>
 <body>
     <div class="header">
         <div class="logo">
-            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f68f332b-4d95-4a7b-afc9-09219dcdf0d3.png" alt="Logo PLN - Perusahaan Listrik Negara dengan ikon petir berwarna putih di atas background biru" />
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f68f332b-4d95-4a7b-afc9-09219dcdf0d3.png" alt="Logo PLN" />
             Manajemen Gudang PLN
         </div>
         <div class="nav-links">
@@ -257,30 +65,27 @@
             <a href="transaksi.html">Transaksi</a>
             <a href="laporan.html">Laporan</a>
             <div class="user-info" id="user-info" style="display: none;">
-                <span class="user-role" id="user-role">User </span>
+                <span class="user-role" id="user-role">User</span>
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
         </div>
     </div>
 
     <div class="container">
-        <div id="login-prompt" style="text-align: center; padding: 50px 20px;">
+        <div id="login-prompt" style="text-align:center;padding:50px 20px;">
             <h2>Silakan Login untuk Mengakses Sistem</h2>
             <button class="btn btn-primary" onclick="openModal('login')">Login</button>
         </div>
 
-        <div id="main-content" style="display: none;">
+        <div id="main-content" style="display:none;">
             <div class="card">
                 <h2 class="card-title">Daftar Barang</h2>
-
                 <div class="search-bar">
                     <input type="text" id="search-barang" placeholder="Cari barang..." />
                     <button class="btn btn-primary" onclick="searchBarang()">Cari</button>
                     <button class="btn btn-success" id="btn-tambah-barang" onclick="openModal('tambah')">Tambah Barang</button>
                 </div>
-
                 <div id="message-container"></div>
-
                 <table id="tabel-barang">
                     <thead>
                         <tr>
@@ -293,9 +98,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td colspan="6" class="loading">Memuat data...</td>
-                        </tr>
+                        <tr><td colspan="6" class="loading">Memuat data...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -311,11 +114,11 @@
             </div>
             <form id="form-login">
                 <div class="form-group">
-                    <label for="email">Email</label>
+                    <label>Email</label>
                     <input type="email" id="email" class="form-control" required placeholder="email@example.com" />
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
+                    <label>Password</label>
                     <input type="password" id="password" class="form-control" required placeholder="Masukkan password" />
                 </div>
                 <div class="action-buttons">
@@ -335,19 +138,19 @@
             </div>
             <form id="form-barang">
                 <div class="form-group">
-                    <label for="kode-barang">Kode Barang</label>
+                    <label>Kode Barang</label>
                     <input type="text" id="kode-barang" class="form-control" required />
                 </div>
                 <div class="form-group">
-                    <label for="nama-barang">Nama Barang</label>
+                    <label>Nama Barang</label>
                     <input type="text" id="nama-barang" class="form-control" required />
                 </div>
                 <div class="form-group">
-                    <label for="stok-barang">Stok Awal</label>
+                    <label>Stok Awal</label>
                     <input type="number" id="stok-barang" class="form-control" required min="0" />
                 </div>
                 <div class="form-group">
-                    <label for="satuan-barang">Satuan</label>
+                    <label>Satuan</label>
                     <select id="satuan-barang" class="form-control" required>
                         <option value="">Pilih Satuan</option>
                         <option value="pcs">Pcs</option>
@@ -358,7 +161,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="lokasi-barang">Lokasi Penyimpanan</label>
+                    <label>Lokasi Penyimpanan</label>
                     <input type="text" id="lokasi-barang" class="form-control" placeholder="Contoh: Rak A1" />
                 </div>
                 <div class="action-buttons">
@@ -370,7 +173,6 @@
     </div>
 
     <script>
-        // Konfigurasi Firebase - GANTI DENGAN KONFIGURASI ANDA
         const firebaseConfig = {
             apiKey: "AIzaSyDhmWlG09XrFsPft61cnMsn-qp5YXeyVlA",
             authDomain: "gudang-pln-upt-gandul.firebaseapp.com",
@@ -379,121 +181,144 @@
             messagingSenderId: "711245353879",
             appId: "1:711245353879:web:91ae05ee8a8735e2a72ad2"
         };
-
-        // Inisialisasi Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // State aplikasi
-        let currentUser  = null;
+        let currentUser = null;
         let userRole = 'user';
         let isEditing = false;
 
-        // Fungsi menampilkan pesan
-        function showMessage(message, type = 'info') {
-            const container = document.getElementById('message-container');
-            container.innerHTML = `<div class="${type}-message">${message}</div>`;
-            setTimeout(() => {
-                container.innerHTML = '';
-            }, 5000);
+        function showMessage(message, type='info'){
+            const container=document.getElementById('message-container');
+            container.innerHTML=`<div class="${type}-message">${message}</div>`;
+            setTimeout(()=>{container.innerHTML='';},5000);
         }
 
-        // Mendapatkan role user dari Firestore
-        async function getUser Role(uid) {
-            try {
-                const userDoc = await db.collection('users').doc(uid).get();
-                if (userDoc.exists) {
-                    return userDoc.data().role || 'user';
-                }
+        async function getUserRole(uid){
+            try{
+                const userDoc=await db.collection('users').doc(uid).get();
+                if(userDoc.exists){return userDoc.data().role||'user';}
                 return 'user';
-            } catch (error) {
-                console.error('Error getting user role:', error);
-                return 'user';
-            }
+            }catch(err){console.error(err);return 'user';}
         }
 
-        // Setup UI berdasarkan role
-        function setupUIByRole() {
-            const tambahBtn = document.getElementById('btn-tambah-barang');
-            if (userRole === 'admin') {
-                tambahBtn.style.display = 'inline-block';
-            } else {
-                tambahBtn.style.display = 'none';
-            }
-            document.getElementById('user-role').textContent = userRole === 'admin' ? 'Administrator' : 'User ';
+        function setupUIByRole(){
+            const tambahBtn=document.getElementById('btn-tambah-barang');
+            tambahBtn.style.display=userRole==='admin'?'inline-block':'none';
+            document.getElementById('user-role').textContent=userRole==='admin'?'Administrator':'User';
         }
 
-        // Render data barang
-        async function renderBarang() {
-            const tbody = document.querySelector('#tabel-barang tbody');
-            tbody.innerHTML = '<tr><td colspan="6" class="loading">Memuat data...</td></tr>';
-            try {
-                const snapshot = await db.collection('barang').orderBy('nama').get();
-                if (snapshot.empty) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Tidak ada data barang</td></tr>';
-                    return;
+        async function renderBarang(){
+            const tbody=document.querySelector('#tabel-barang tbody');
+            tbody.innerHTML='<tr><td colspan="6" class="loading">Memuat data...</td></tr>';
+            try{
+                const snapshot=await db.collection('barang').orderBy('nama').get();
+                if(snapshot.empty){
+                    tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:20px;">Tidak ada data barang</td></tr>';return;
                 }
-                tbody.innerHTML = '';
-                snapshot.forEach(doc => {
-                    const item = doc.data();
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
+                tbody.innerHTML='';
+                snapshot.forEach(doc=>{
+                    const item=doc.data();
+                    const row=document.createElement('tr');
+                    row.innerHTML=`
                         <td>${doc.id}</td>
                         <td>${item.nama}</td>
                         <td>${item.stok}</td>
                         <td>${item.satuan}</td>
-                        <td>${item.lokasi || '-'}</td>
-                        <td>
-                            ${userRole === 'admin' ? `
-                                <button class="btn btn-primary" onclick="editBarang('${doc.id}')">Edit</button>
-                                <button class="btn btn-danger" onclick="hapusBarang('${doc.id}')">Hapus</button>
-                            ` : '-'}
-                        </td>
-                    `;
+                        <td>${item.lokasi||'-'}</td>
+                        <td>${userRole==='admin'?
+                            `<button class="btn btn-primary" onclick="editBarang('${doc.id}')">Edit</button>
+                             <button class="btn btn-danger" onclick="hapusBarang('${doc.id}')">Hapus</button>`
+                            :'-'}</td>`;
                     tbody.appendChild(row);
                 });
-            } catch (error) {
-                console.error('Error loading barang:', error);
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #dc3545; padding: 20px;">Error memuat data</td></tr>';
+            }catch(err){
+                console.error(err);
+                tbody.innerHTML='<tr><td colspan="6" style="color:#dc3545;text-align:center;padding:20px;">Error memuat data</td></tr>';
             }
         }
 
-        // Buka modal
-        function openModal(type) {
-            document.getElementById(`modal-${type}`).style.display = 'flex';
-            if (type === 'tambah') {
-                isEditing = false;
+        function openModal(type){
+            document.getElementById(`modal-${type}`).style.display='flex';
+            if(type==='tambah'){
+                isEditing=false;
                 document.getElementById('form-barang').reset();
-                document.getElementById('kode-barang').disabled = false;
-                document.getElementById('modal-tambah-title').textContent = 'Tambah Barang Baru';
+                document.getElementById('kode-barang').disabled=false;
+                document.getElementById('modal-tambah-title').textContent='Tambah Barang Baru';
             }
         }
+        function closeModal(type){document.getElementById(`modal-${type}`).style.display='none';}
 
-        // Tutup modal
-        function closeModal(type) {
-            document.getElementById(`modal-${type}`).style.display = 'none';
-        }
-
-        // Edit barang
-        async function editBarang(kode) {
-            if (userRole !== 'admin') {
-                showMessage('Anda tidak memiliki akses untuk mengedit data.', 'error');
-                return;
-            }
-            try {
-                const doc = await db.collection('barang').doc(kode).get();
-                if (doc.exists) {
-                    const item = doc.data();
-                    document.getElementById('kode-barang').value = kode;
-                    document.getElementById('kode-barang').disabled = true;
-                    document.getElementById('nama-barang').value = item.nama;
-                    document.getElementById('stok-barang').value = item.stok;
-                    document.getElementById('satuan-barang').value = item.satuan;
-                    document.getElementById('lokasi-barang').value = item.lokasi || '';
-                    isEditing = true;
-                    document.getElementById('modal-tambah-title').textContent = 'Edit Barang';
+        async function editBarang(kode){
+            if(userRole!=='admin'){showMessage('Tidak ada akses','error');return;}
+            try{
+                const docSnap=await db.collection('barang').doc(kode).get();
+                if(docSnap.exists){
+                    const item=docSnap.data();
+                    document.getElementById('kode-barang').value=kode;
+                    document.getElementById('kode-barang').disabled=true;
+                    document.getElementById('nama-barang').value=item.nama;
+                    document.getElementById('stok-barang').value=item.stok;
+                    document.getElementById('satuan-barang').value=item.satuan;
+                    document.getElementById('lokasi-barang').value=item.lokasi||'';
+                    isEditing=true;
+                    document.getElementById('modal-tambah-title').textContent='Edit Barang';
                     openModal('tambah');
                 }
-            } catch (error) {
-                console.error('Error editing barang:',
+            }catch(err){console.error(err);}
+        }
+
+        async function hapusBarang(kode){
+            if(confirm('Yakin hapus barang ini?')){
+                await db.collection('barang').doc(kode).delete();
+                showMessage('Barang berhasil dihapus','success');
+                renderBarang();
+            }
+        }
+
+        document.getElementById('form-barang').addEventListener('submit',async(e)=>{
+            e.preventDefault();
+            const kode=document.getElementById('kode-barang').value;
+            const nama=document.getElementById('nama-barang').value;
+            const stok=parseInt(document.getElementById('stok-barang').value);
+            const satuan=document.getElementById('satuan-barang').value;
+            const lokasi=document.getElementById('lokasi-barang').value;
+            try{
+                if(isEditing){
+                    await db.collection('barang').doc(kode).update({nama,stok,satuan,lokasi});
+                    showMessage('Barang berhasil diperbarui','success');
+                }else{
+                    await db.collection('barang').doc(kode).set({nama,stok,satuan,lokasi});
+                    showMessage('Barang berhasil ditambahkan','success');
+                }
+                closeModal('tambah');renderBarang();
+            }catch(err){showMessage('Error: '+err.message,'error');}
+        });
+
+        document.getElementById('form-login').addEventListener('submit',async(e)=>{
+            e.preventDefault();
+            const email=document.getElementById('email').value;
+            const password=document.getElementById('password').value;
+            try{
+                const res=await auth.signInWithEmailAndPassword(email,password);
+                currentUser=res.user;
+                userRole=await getUserRole(currentUser.uid);
+                setupUIByRole();
+                document.getElementById('login-prompt').style.display='none';
+                document.getElementById('main-content').style.display='block';
+                document.getElementById('user-info').style.display='flex';
+                closeModal('login');
+                renderBarang();
+            }catch(err){showMessage('Login gagal: '+err.message,'error');}
+        });
+
+        function logout(){
+            auth.signOut();currentUser=null;userRole='user';
+            document.getElementById('main-content').style.display='none';
+            document.getElementById('login-prompt').style.display='block';
+            document.getElementById('user-info').style.display='none';
+        }
+    </script>
+</body>
+</html>
