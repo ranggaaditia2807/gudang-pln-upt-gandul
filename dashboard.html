@@ -83,50 +83,63 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 60px;
+            gap: 40px;
         }
         .level {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 30px;
             position: relative;
         }
         .manager-level {
-            margin-bottom: 80px;
+            margin-bottom: 60px;
         }
         .team-level {
             display: flex;
             justify-content: center;
-            gap: 40px;
+            gap: 30px;
             position: relative;
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
+            margin-top: 30px;
         }
         /* Connection Lines */
         .vertical-connector {
-            width: 3px;
+            width: 4px;
             background: linear-gradient(to bottom, #007bff, #0056b3);
-            margin: 10px 0;
+            margin: 15px 0;
             position: relative;
             z-index: 1;
         }
         .vertical-connector.long {
-            height: 60px;
+            height: 70px;
         }
         .vertical-connector.short {
-            height: 30px;
+            height: 40px;
         }
-        .horizontal-connectors {
+        .horizontal-connector {
             position: absolute;
-            top: -30px;
-            left: 10%;
-            right: 10%;
-            height: 3px;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 4px;
             background: linear-gradient(to right, #007bff, #0056b3);
-            margin: 0 auto;
             z-index: 0;
             border-radius: 2px;
+        }
+        .full-width-connector {
+            width: 80%;
+        }
+        .individual-connectors {
+            display: flex;
+            justify-content: space-between;
+            position: absolute;
+            top: -20px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, #007bff, #0056b3);
+            z-index: 0;
         }
         /* Employee Cards */
         .employee-card {
@@ -174,6 +187,23 @@
         .employee-card:hover .employee-image img {
             transform: scale(1.05);
         }
+        /* Vertical line from horizontal connector to each employee */
+        .employee-connector {
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(to bottom, #007bff, #0056b3);
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        .team-member-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -200,7 +230,7 @@
             <div class="level manager-level">
                 <div class="employee-card manager-card">
                     <div class="employee-image">
-                        <img src="KERY DERMAWAN.png" alt="Foto Kery Dermawan" />
+                        <img src="https://placehold.co/100x100" alt="Profile photo of Kery Dermawan, a professional construction manager" />
                     </div>
                     <div><strong>ASMAN KONSTRUKSI</strong></div>
                     <div>KERY DERMAWAN</div>
@@ -212,39 +242,51 @@
             <div class="level">
                 <div class="employee-card team-leader-card">
                     <div class="employee-image">
-                        <img src="DIAS.png" alt="Foto Muhammad Dias" />
+                        <img src="https://placehold.co/100x100" alt="Profile photo of Muhammad Dias, logistics team leader" />
                     </div>
                     <div><strong>TEAM LEADER LOGISTIK</strong></div>
                     <div>MUHAMMAD DIAS</div>
                 </div>
-                <!-- Garis vertikal dari Pak Dias ke garis horizontal -->
                 <div class="vertical-connector short"></div>
-                <!-- Garis horizontal menghubungkan ketiga anggota -->
-                <div class="horizontal-connectors"></div>
+                <div class="horizontal-connector full-width-connector"></div>
             </div>
 
-            <!-- Brilian (kiri), Jaka (tengah), Ageng (kanan) -->
-            <div class="level team-level">
-                <div class="employee-card">
-                    <div class="employee-image">
-                        <img src="BRILIAN AHMAD FATHONI.png" alt="Foto Brilian Ahmad Fathoni" />
+            <!-- Brilian, Jaka, Ageng - Berurutan ke Samping -->
+            <div class="team-level">
+                <!-- Brilian -->
+                <div class="team-member-wrapper">
+                    <div class="employee-connector"></div>
+                    <div class="employee-card">
+                        <div class="employee-image">
+                            <img src="https://placehold.co/100x100" alt="Profile photo of Brilian Ahmad Fathoni, administration helper" />
+                        </div>
+                        <div><strong>ADMINISTRASI/HELPER</strong></div>
+                        <div>BRILIAN AHMAD FATHONI</div>
                     </div>
-                    <div><strong>ADMINISTRASI/HELPER</strong></div>
-                    <div>BRILIAN AHMAD FATHONI</div>
                 </div>
-                <div class="employee-card">
-                    <div class="employee-image">
-                        <img src="JAKA.png" alt="Foto Jaka Adhi Primantara" />
+
+                <!-- Jaka -->
+                <div class="team-member-wrapper">
+                    <div class="employee-connector"></div>
+                    <div class="employee-card">
+                        <div class="employee-image">
+                            <img src="https://placehold.co/100x100" alt="Profile photo of Jaka Adhi Primantara, administration helper" />
+                        </div>
+                        <div><strong>ADMINISTRASI/HELPER</strong></div>
+                        <div>JAKA ADHI PRIMANTARA</div>
                     </div>
-                    <div><strong>ADMINISTRASI/HELPER</strong></div>
-                    <div>JAKA ADHI PRIMANTARA</div>
                 </div>
-                <div class="employee-card">
-                    <div class="employee-image">
-                        <img src="AGENG DARMAWAN.png" alt="Foto Ageng Darmawan" />
+
+                <!-- Ageng -->
+                <div class="team-member-wrapper">
+                    <div class="employee-connector"></div>
+                    <div class="employee-card">
+                        <div class="employee-image">
+                            <img src="https://placehold.co/100x100" alt="Profile photo of Ageng Darmawan, cleaning service and helper" />
+                        </div>
+                        <div><strong>CLEANING SERVICE/HELPER</strong></div>
+                        <div>AGENG DARMAWAN</div>
                     </div>
-                    <div><strong>CLEANING SERVICE/HELPER</strong></div>
-                    <div>AGENG DARMAWAN</div>
                 </div>
             </div>
         </div>
