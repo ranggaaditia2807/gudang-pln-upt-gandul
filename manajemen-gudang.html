@@ -1,81 +1,715 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Firestore CRUD Example</title>
+    <meta charset="UTF-8">
+    <title>Manajemen Gudang PLN</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+        .header {
+            background-color: #005baa;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 5px 0;
+            position: relative;
+        }
+        .nav-links a:hover:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: white;
+            bottom: 0;
+            left: 0;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .user-role {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .logout-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .card-title {
+            margin-top: 0;
+            color: #005baa;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: #f0f7ff;
+            color: #005baa;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f8faff;
+        }
+        .btn {
+            padding: 8px 15px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background-color: #005baa;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #004a8d;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .modal-title {
+            margin: 0;
+            color: #005baa;
+        }
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+            color: #777;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            border-color: #005baa;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0,91,170,0.2);
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        .error-message {
+            color: #dc3545;
+            background: #fff5f5;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #dc3545;
+        }
+        .success-message {
+            color: #28a745;
+            background: #f8fff9;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #28a745;
+        }
+    </style>
 </head>
 <body>
-  <h2>Tambah User ke Firestore</h2>
-  <input type="text" id="name" placeholder="Nama"><br>
-  <input type="email" id="email" placeholder="Email"><br>
-  <button onclick="tambahUser()">Tambah</button>
+    <div class="header">
+        <div class="logo">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f68f332b-4d95-4a7b-afc9-09219dcdf0d3.png" alt="Logo PLN - Perusahaan Listrik Negara dengan ikon petir berwarna putih di atas background biru">
+            Manajemen Gudang PLN
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="transaksi.html">Transaksi</a>
+            <a href="laporan.html">Laporan</a>
+            <div class="user-info" id="user-info" style="display: none;">
+                <span class="user-role" id="user-role">User</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </div>
 
-  <h2>Daftar User</h2>
-  <ul id="userList"></ul>
+    <div class="container">
+        <div id="login-prompt" style="text-align: center; padding: 50px 20px;">
+            <h2>Silakan Login untuk Mengakses Sistem</h2>
+            <button class="btn btn-primary" onclick="openModal('login')">Login</button>
+        </div>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    // Import Firebase
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    
-   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
- const firebaseConfig = {
-  apiKey: "AIzaSyDhmWlG09XrFsPft61cnMsn-qp5YXeyVlA",
-  authDomain: "gudang-pln-upt-gandul.firebaseapp.com",
-  projectId: "gudang-pln-upt-gandul",
-  storageBucket: "gudang-pln-upt-gandul.appspot.com",
-  messagingSenderId: "711245353879",
-  appId: "1:711245353879:web:91ae05ee8a8735e2a72ad2",
-  measurementId: "G-G6BRJ7FG5R"
-};
+        <div id="main-content" style="display: none;">
+            <div class="card">
+                <h2 class="card-title">Daftar Barang</h2>
+                
+                <div class="search-bar">
+                    <input type="text" id="search-barang" placeholder="Cari barang...">
+                    <button class="btn btn-primary" onclick="searchBarang()">Cari</button>
+                    <button class="btn btn-success" id="btn-tambah-barang" onclick="openModal('tambah')">Tambah Barang</button>
+                </div>
+                
+                <div id="message-container"></div>
+                
+                <table id="tabel-barang">
+                    <thead>
+                        <tr>
+                            <th>Kode Barang</th>
+                            <th>Nama Barang</th>
+                            <th>Stok</th>
+                            <th>Satuan</th>
+                            <th>Lokasi</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" class="loading">Memuat data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
+    <!-- Modal Login -->
+    <div id="modal-login" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Login Sistem</h3>
+                <span class="close" onclick="closeModal('login')">&times;</span>
+            </div>
+            <form id="form-login">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" required placeholder="email@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" required placeholder="Masukkan password">
+                </div>
+                <div class="action-butons">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('login')">Batal</button>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    };
+    <!-- Modal Tambah/Edit Barang -->
+    <div id="modal-tambah" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-tambah-title">Tambah Barang Baru</h3>
+                <span class="close" onclick="closeModal('tambah')">&times;</span>
+            </div>
+            <form id="form-barang">
+                <div class="form-group">
+                    <label for="kode-barang">Kode Barang</label>
+                    <input type="text" id="kode-barang" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="nama-barang">Nama Barang</label>
+                    <input type="text" id="nama-barang" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="stok-barang">Stok Awal</label>
+                    <input type="number" id="stok-barang" class="form-control" required min="0">
+                </div>
+                <div class="form-group">
+                    <label for="satuan-barang">Satuan</label>
+                    <select id="satuan-barang" class="form-control" required>
+                        <option value="">Pilih Satuan</option>
+                        <option value="pcs">Pcs</option>
+                        <option value="unit">Unit</option>
+                        <option value="kg">Kg</option>
+                        <option value="meter">Meter</option>
+                        <option value="liter">Liter</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="lokasi-barang">Lokasi Penyimpanan</label>
+                    <input type="text" id="lokasi-barang" class="form-control" placeholder="Contoh: Rak A1">
+                </div>
+                <div class="action-buttons">
+                    <button type="button" class="btn btn-danger" onclick="closeModal('tambah')">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    // Init Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    <script>
+        // Konfigurasi Firebase - GANTI DENGAN KONFIGURASI ANDA
+        const firebaseConfig = {
+        apiKey: "AIzaSyDhmWlG09XrFsPft61cnMsn-qp5YXeyVlA",
+        authDomain: "gudang-pln-upt-gandul.firebaseapp.com",
+        projectId: "gudang-pln-upt-gandul",
+       storageBucket: "gudang-pln-upt-gandul.appspot.com",
+       messagingSenderId: "711245353879",
+       appId: "1:711245353879:web:91ae05ee8a8735e2a72ad2"
+        };
 
-    // Tambah user
-    async function tambahUser() {
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-      try {
-        await addDoc(collection(db, "users"), {
-          name: name,
-          email: email,
-          createdAt: new Date()
+        // State aplikasi
+        let currentUser = null;
+        let userRole = 'user';
+        let isEditing = false;
+
+        // Inisialisasi data dummy untuk development (jika perlu)
+        async function initializeDummyData() {
+            // Cek apakah collection users ada
+            const usersSnapshot = await db.collection('users').get();
+            if (usersSnapshot.empty) {
+                // Buat user admin dummy
+                await db.collection('users').doc('admin@pln.com').set({
+                    email: 'admin@pln.com',
+                    role: 'admin',
+                    createdAt: new Date()
+                });
+                
+                // Buat user biasa dummy
+                await db.collection('users').doc('user@pln.com').set({
+                    email: 'user@pln.com',
+                    role: 'user',
+                    createdAt: new Date()
+                });
+            }
+
+            // Cek apakah collection barang ada
+            const barangSnapshot = await db.collection('barang').get();
+            if (barangSnapshot.empty) {
+                // Buat data barang dummy
+                const dummyData = [
+                    { kode: 'BRG001', nama: 'Laptop Dell', stok: 10, satuan: 'unit', lokasi: 'Rak A1' },
+                    { kode: 'BRG002', nama: 'Mouse Wireless', stok: 25, satuan: 'pcs', lokasi: 'Rak B2' },
+                    { kode: 'BRG003', nama: 'Keyboard Mechanical', stok: 8, satuan: 'pcs', lokasi: 'Rak B3' }
+                ];
+
+                for (const item of dummyData) {
+                    await db.collection('barang').doc(item.kode).set(item);
+                }
+            }
+        }
+
+        // Fungsi untuk menampilkan pesan
+        function showMessage(message, type = 'info') {
+            const container = document.getElementById('message-container');
+            container.innerHTML = `
+                <div class="${type}-message">
+                    ${message}
+                </div>
+            `;
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // Fungsi untuk mendapatkan role user dari Firestore
+        async function getUserRole(uid) {
+            try {
+                const userDoc = await db.collection('users').doc(uid).get();
+                if (userDoc.exists) {
+                    return userDoc.data().role || 'user';
+                }
+                return 'user';
+            } catch (error) {
+                console.error('Error getting user role:', error);
+                return 'user';
+            }
+        }
+
+        // Fungsi untuk setup UI berdasarkan role
+        function setupUIByRole() {
+            const tambahBtn = document.getElementById('btn-tambah-barang');
+            if (userRole === 'admin') {
+                tambahBtn.style.display = 'inline-block';
+            } else {
+                tambahBtn.style.display = 'none';
+            }
+
+            document.getElementById('user-role').textContent = userRole === 'admin' ? 'Administrator' : 'User';
+        }
+
+        // Fungsi untuk render data barang
+        async function renderBarang() {
+            const tbody = document.querySelector('#tabel-barang tbody');
+            tbody.innerHTML = '<tr><td colspan="6" class="loading">Memuat data...</td></tr>';
+
+            try {
+                const snapshot = await db.collection('barang').orderBy('nama').get();
+                
+                if (snapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Tidak ada data barang</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const item = doc.data();
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${doc.id}</td>
+                        <td>${item.nama}</td>
+                        <td>${item.stok}</td>
+                        <td>${item.satuan}</td>
+                        <td>${item.lokasi || '-'}</td>
+                        <td>
+                            ${userRole === 'admin' ? `
+                                <button class="btn btn-primary" onclick="editBarang('${doc.id}')">Edit</button>
+                                <button class="btn btn-danger" onclick="hapusBarang('${doc.id}')">Hapus</button>
+                            ` : '-'}
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading barang:', error);
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #dc3545; padding: 20px;">Error memuat data</td></tr>';
+            }
+        }
+
+        // Fungsi untuk membuka modal
+        function openModal(type) {
+            document.getElementById(`modal-${type}`).style.display = 'flex';
+            
+            if (type === 'tambah') {
+                isEditing = false;
+                document.getElementById('form-barang').reset();
+                document.getElementById('kode-barang').disabled = false;
+                document.getElementById('modal-tambah-title').textContent = 'Tambah Barang Baru';
+            }
+        }
+
+        // Fungsi untuk menutup modal
+        function closeModal(type) {
+            document.getElementById(`modal-${type}`).style.display = 'none';
+        }
+
+        // Fungsi untuk edit barang
+        async function editBarang(kode) {
+            if (userRole !== 'admin') {
+                showMessage('Anda tidak memiliki akses untuk mengedit data.', 'error');
+                return;
+            }
+
+            try {
+                const doc = await db.collection('barang').doc(kode).get();
+                if (doc.exists) {
+                    const item = doc.data();
+                    document.getElementById('kode-barang').value = kode;
+                    document.getElementById('kode-barang').disabled = true;
+                    document.getElementById('nama-barang').value = item.nama;
+                    document.getElementById('stok-barang').value = item.stok;
+                    document.getElementById('satuan-barang').value = item.satuan;
+                    document.getElementById('lokasi-barang').value = item.lokasi || '';
+                    
+                    isEditing = true;
+                    document.getElementById('modal-tambah-title').textContent = 'Edit Barang';
+                    openModal('tambah');
+                }
+            } catch (error) {
+                console.error('Error editing barang:', error);
+                showMessage('Gagal memuat data barang.', 'error');
+            }
+        }
+
+        // Fungsi untuk hapus barang
+        async function hapusBarang(kode) {
+            if (userRole !== 'admin') {
+                showMessage('Anda tidak memiliki akses untuk menghapus data.', 'error');
+                return;
+            }
+
+            if (confirm(`Apakah Anda yakin ingin menghapus barang ${kode}?`)) {
+                try {
+                    await db.collection('barang').doc(kode).delete();
+                    showMessage('Barang berhasil dihapus.', 'success');
+                    renderBarang();
+                } catch (error) {
+                    console.error('Error deleting barang:', error);
+                    showMessage('Gagal menghapus barang.', 'error');
+                }
+            }
+        }
+
+        // Fungsi untuk mencari barang
+        async function searchBarang() {
+            const searchTerm = document.getElementById('search-barang').value.toLowerCase();
+            const tbody = document.querySelector('#tabel-barang tbody');
+            tbody.innerHTML = '<tr><td colspan="6" class="loading">Mencari...</td></tr>';
+
+            try {
+                let query = db.collection('barang');
+                if (searchTerm) {
+                    query = query.where('nama', '>=', searchTerm).where('nama', '<=', searchTerm + '\uf8ff');
+                }
+                
+                const snapshot = await query.orderBy('nama').get();
+                
+                if (snapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Tidak ada barang yang ditemukan</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const item = doc.data();
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${doc.id}</td>
+                        <td>${item.nama}</td>
+                        <td>${item.stok}</td>
+                        <td>${item.satuan}</td>
+                        <td>${item.lokasi || '-'}</td>
+                        <td>
+                            ${userRole === 'admin' ? `
+                                <button class="btn btn-primary" onclick="editBarang('${doc.id}')">Edit</button>
+                                <button class="btn btn-danger" onclick="hapusBarang('${doc.id}')">Hapus</button>
+                            ` : '-'}
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error searching barang:', error);
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #dc3545; padding: 20px;">Error saat mencari</td></tr>';
+            }
+        }
+
+        // Event listener untuk form login
+        document.getElementById('form-login').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                currentUser = userCredential.user;
+                userRole = await getUserRole(currentUser.uid);
+                
+                // Update UI
+                document.getElementById('login-prompt').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                document.getElementById('user-info').style.display = 'flex';
+                
+                setupUIByRole();
+                renderBarang();
+                closeModal('login');
+                showMessage('Login berhasil!', 'success');
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('Login gagal: ' + error.message, 'error');
+            }
         });
-        alert("User berhasil ditambahkan!");
-        muatUser();
-      } catch (e) {
-        alert("Error: " + e.message);
-      }
-    }
 
-    // Tampilkan user
-    async function muatUser() {
-      const list = document.getElementById("userList");
-      list.innerHTML = "";
+        // Event listener untuk form barang
+        document.getElementById('form-barang').addEventListener('submit', async function(e) {
+            e.preventDefault();
 
-      const snapshot = await getDocs(collection(db, "users"));
-      snapshot.forEach((doc) => {
-        const li = document.createElement("li");
-        li.textContent = doc.data().name + " - " + doc.data().email;
-        list.appendChild(li);
-      });
-    }
+            if (userRole !== 'admin') {
+                showMessage('Anda tidak memiliki akses untuk mengubah data.', 'error');
+                return;
+            }
 
-    // Load awal
-    muatUser();
+            const kode = document.getElementById('kode-barang').value;
+            const nama = document.getElementById('nama-barang').value;
+            const stok = parseInt(document.getElementById('stok-barang').value);
+            const satuan = document.getElementById('satuan-barang').value;
+            const lokasi = document.getElementById('lokasi-barang').value;
 
-    // Biar tombol bisa dipakai
-    window.tambahUser = tambahUser;
-  </script>
+            try {
+                await db.collection('barang').doc(kode).set({
+                    nama,
+                    stok,
+                    satuan,
+                    lokasi
+                }, { merge: true });
+
+                showMessage(isEditing ? 'Barang berhasil diperbarui!' : 'Barang berhasil ditambahkan!', 'success');
+                renderBarang();
+                closeModal('tambah');
+                
+            } catch (error) {
+                console.error('Error saving barang:', error);
+                showMessage('Gagal menyimpan barang: ' + error.message, 'error');
+            }
+        });
+
+        // Fungsi logout
+        function logout() {
+            auth.signOut().then(() => {
+                currentUser = null;
+                userRole = 'user';
+                
+                document.getElementById('login-prompt').style.display = 'block';
+                document.getElementById('main-content').style.display = 'none';
+                document.getElementById('user-info').style.display = 'none';
+                
+                showMessage('Anda telah logout.', 'info');
+            });
+        }
+
+        // Listen for auth state changes
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                userRole = await getUserRole(user.uid);
+                
+                document.getElementById('login-prompt').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                document.getElementById('user-info').style.display = 'flex';
+                
+                setupUIByRole();
+                renderBarang();
+            } else {
+                document.getElementById('login-prompt').style.display = 'block';
+                document.getElementById('main-content').style.display = 'none';
+                document.getElementById('user-info').style.display = 'none';
+            }
+        });
+
+        // Initialize dummy data on first load
+        document.addEventListener('DOMContentLoaded', function() {
+            // initializeDummyData(); // Uncomment jika ingin membuat data dummy otomatis
+        });
+    </script>
 </body>
 </html>
 
