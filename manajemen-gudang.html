@@ -1,386 +1,60 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>Manajemen Gudang PLN</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-        }
-        .header {
-            background-color: #005baa;
-            color: white;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-        .logo img {
-            height: 40px;
-            margin-right: 10px;
-        }
-        .nav-links {
-            display: flex;
-            gap: 25px;
-        }
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 5px 0;
-            position: relative;
-        }
-        .nav-links a:hover:after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: white;
-            bottom: 0;
-            left: 0;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-        .card {
-            background: white;
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .card-title {
-            margin-top: 0;
-            color: #005baa;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        th {
-            background-color: #f0f7ff;
-            color: #005baa;
-            font-weight: 600;
-        }
-        tr:hover {
-            background-color: #f8faff;
-        }
-        .btn {
-            padding: 8px 15px;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
-        }
-        .btn-primary {
-            background-color: #005baa;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #004a8d;
-        }
-        .btn-danger {
-            background-color: #dc3545;
-            color: white;
-        }
-        .btn-danger:hover {
-            background-color: #c82333;
-        }
-        .btn-success {
-            background-color: #28a745;
-            color: white;
-        }
-        .btn-success:hover {
-            background-color: #218838;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: white;
-            padding: 25px;
-            border-radius: 8px;
-            width: 500px;
-            max-width: 90%;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .modal-title {
-            margin: 0;
-            color: #005baa;
-        }
-        .close {
-            font-size: 24px;
-            cursor: pointer;
-            color: #777;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .form-control:focus {
-            border-color: #005baa;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(0,91,170,0.2);
-        }
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-            justify-content: flex-end;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manajemen Gudang</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="header">
-        <div class="logo">
-            <img src="P..jpeg" alt="Logo PLN">
-            Manajemen Gudang PLN
-        </div>
-        <div class="nav-links">
-            <a href="index.html">Home</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="transaksi.html">Transaksi</a>
-            <a href="laporan.html">Laporan</a>
-        </div>
-    </div>
+  <h1>Manajemen Gudang</h1>
 
-    <div class="container">
-        <div class="card">
-            <h2 class="card-title">Daftar Barang</h2>
-            
-            <div class="search-bar">
-                <input type="text" id="search-barang" placeholder="Cari barang...">
-                <button class="btn btn-primary" onclick="searchBarang()">Cari</button>
-                <button class="btn btn-success" onclick="openModal('tambah')">Tambah Barang</button>
-            </div>
-            
-            <table id="tabel-barang">
-                <thead>
-                    <tr>
-                        <th>Kode Barang</th>
-                        <th>Nama Barang</th>
-                        <th>Stok</th>
-                        <th>Satuan</th>
-                        <th>Lokasi</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Data akan diisi oleh JavaScript -->
-                </tbody>
-            </table>
-        </div>
-    </div>
+  <!-- Form Tambah Barang -->
+  <section id="tambah-barang">
+    <h2>Tambah Barang</h2>
+    <form id="form-tambah-barang">
+      <label for="kodeBarang">Kode Barang</label>
+      <input type="text" id="kodeBarang" name="kodeBarang" required>
 
-    <!-- Modal Tambah/Edit Barang -->
-    <div id="modal-tambah" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">Tambah Barang Baru</h3>
-                <span class="close" onclick="closeModal('tambah')">&times;</span>
-            </div>
-            <form id="form-barang">
-                <div class="form-group">
-                    <label for="kode-barang">Kode Barang</label>
-                    <input type="text" id="kode-barang" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="nama-barang">Nama Barang</label>
-                    <input type="text" id="nama-barang" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="stok-barang">Stok Awal</label>
-                    <input type="number" id="stok-barang" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="satuan-barang">Satuan</label>
-                    <select id="satuan-barang" class="form-control" required>
-                        <option value="">Pilih Satuan</option>
-                        <option value="pcs">Pcs</option>
-                        <option value="unit">Unit</option>
-                        <option value="kg">Kg</option>
-                        <option value="meter">Meter</option>
-                        <option value="liter">Liter</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="lokasi-barang">Lokasi Penyimpanan</label>
-                    <input type="text" id="lokasi-barang" class="form-control">
-                </div>
-                <div class="action-buttons">
-                    <button type="button" class="btn btn-danger" onclick="closeModal('tambah')">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
+      <label for="namaBarang">Nama Barang</label>
+      <input type="text" id="namaBarang" name="namaBarang" required>
 
-    <script>
-        // Data Integration System - Menghubungkan Manajemen Gudang dengan Transaksi
-        const STORAGE_KEYS = {
-            BARANG: 'data-barang',
-            TRANSAKSI_PEMASUKAN: 'transaksiPemasukan',
-            TRANSAKSI_PENGELUARAN: 'transaksiPengeluaran'
-        };
+      <!-- Tambahan: Jenis Material -->
+      <label for="jenisMaterial">Jenis Material</label>
+      <input type="text" id="jenisMaterial" name="jenisMaterial" placeholder="Masukkan jenis material" required>
 
-        function getDataBarang() {
-            return JSON.parse(localStorage.getItem(STORAGE_KEYS.BARANG)) || [];
-        }
+      <label for="jumlahBarang">Jumlah</label>
+      <input type="number" id="jumlahBarang" name="jumlahBarang" required>
 
-        function saveDataBarang(barang) {
-            localStorage.setItem(STORAGE_KEYS.BARANG, JSON.stringify(barang));
-        }
+      <label for="hargaBarang">Harga</label>
+      <input type="number" id="hargaBarang" name="hargaBarang" required>
 
-        // Inisialisasi data barang
-        function initData() {
-            if (!localStorage.getItem(STORAGE_KEYS.BARANG)) {
-                const barangAwal = [
-                    { kode: 'BRG001', nama: 'Laptop Dell', stok: 10, satuan: 'unit', lokasi: 'Rak A1' },
-                    { kode: 'BRG002', nama: 'Mouse Wireless', stok: 5, satuan: 'pcs', lokasi: 'Rak B2' },
-                    { kode: 'BRG003', nama: 'Keyboard Mechanical', stok: 2, satuan: 'pcs', lokasi: 'Rak B3' }
-                ];
-                saveDataBarang(barangAwal);
-            }
-        }
+      <button type="submit">Simpan</button>
+    </form>
+  </section>
 
-        // Fungsi untuk menampilkan data barang
-        function renderBarang() {
-            const barang = getDataBarang();
-            const tbody = document.querySelector('#tabel-barang tbody');
-            tbody.innerHTML = '';
-            
-            barang.forEach(item => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.kode}</td>
-                    <td>${item.nama}</td>
-                    <td>${item.stok}</td>
-                    <td>${item.satuan}</td>
-                    <td>${item.lokasi || '-'}</td>
-                    <td>
-                        <button class="btn btn-primary" onclick="editBarang('${item.kode}')">Edit</button>
-                        <button class="btn btn-danger" onclick="hapusBarang('${item.kode}')">Hapus</button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
+  <!-- Tabel Data Barang -->
+  <section id="daftar-barang">
+    <h2>Daftar Barang</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Kode Barang</th>
+          <th>Nama Barang</th>
+          <th>Jenis Material</th> <!-- Tambahan kolom Jenis Material -->
+          <th>Jumlah</th>
+          <th>Harga</th>
+        </tr>
+      </thead>
+      <tbody id="tabel-barang">
+        <!-- Data barang akan muncul di sini -->
+      </tbody>
+    </table>
+  </section>
 
-        // Fungsi untuk membuka modal
-        function openModal(type) {
-            document.getElementById(`modal-${type}`).style.display = 'flex';
-            if (type === 'tambah') {
-                document.getElementById('form-barang').reset();
-            }
-        }
-
-        // Fungsi untuk menutup modal
-        function closeModal(type) {
-            document.getElementById(`modal-${type}`).style.display = 'none';
-        }
-
-        // Fungsi untuk menyimpan barang
-        document.getElementById('form-barang').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const kode = document.getElementById('kode-barang').value;
-            const nama = document.getElementById('nama-barang').value;
-            const stok = parseInt(document.getElementById('stok-barang').value);
-            const satuan = document.getElementById('satuan-barang').value;
-            const lokasi = document.getElementById('lokasi-barang').value;
-
-            // Cek apakah barang sudah ada
-            const barang = getDataBarang();
-            const existingItem = barang.find(item => item.kode === kode);
-            if (existingItem) {
-                existingItem.nama = nama;
-                existingItem.stok = stok;
-                existingItem.satuan = satuan;
-                existingItem.lokasi = lokasi;
-            } else {
-                barang.push({ kode, nama, stok, satuan, lokasi });
-            }
-
-            // Simpan data barang ke localStorage
-            saveDataBarang(barang);
-            renderBarang();
-            closeModal('tambah');
-        });
-
-        // Fungsi untuk edit barang
-        function editBarang(kode) {
-            const barang = getDataBarang();
-            const item = barang.find(b => b.kode === kode);
-            if (item) {
-                document.getElementById('kode-barang').value = item.kode;
-                document.getElementById('nama-barang').value = item.nama;
-                document.getElementById('stok-barang').value = item.stok;
-                document.getElementById('satuan-barang').value = item.satuan;
-                document.getElementById('lokasi-barang').value = item.lokasi;
-                openModal('tambah');
-            }
-        }
-
-        // Fungsi untuk hapus barang
-        function hapusBarang(kode) {
-            let barang = getDataBarang();
-            barang = barang.filter(b => b.kode !== kode);
-            saveDataBarang(barang);
-            renderBarang();
-        }
-
-        // Inisialisasi pertama kali
-        document.addEventListener('DOMContentLoaded', function() {
-            initData();
-            renderBarang();
-        });
-    </script>
+  <script src="config.js"></script>
+  <script src="data-config.js"></script>
+  <script src="connect.js"></script>
+  <script src="data-integration.js"></script>
 </body>
 </html>
