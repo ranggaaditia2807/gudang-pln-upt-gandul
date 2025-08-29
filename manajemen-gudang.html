@@ -19,7 +19,7 @@
       <label for="namaBarang">Nama Barang</label>
       <input type="text" id="namaBarang" name="namaBarang" required>
 
-      <!-- Tambahan: Jenis Material -->
+      <!-- Tambahan Jenis Material -->
       <label for="jenisMaterial">Jenis Material</label>
       <input type="text" id="jenisMaterial" name="jenisMaterial" placeholder="Masukkan jenis material" required>
 
@@ -41,7 +41,7 @@
         <tr>
           <th>Kode Barang</th>
           <th>Nama Barang</th>
-          <th>Jenis Material</th> <!-- Tambahan kolom Jenis Material -->
+          <th>Jenis Material</th> <!-- Tambahan -->
           <th>Jumlah</th>
           <th>Harga</th>
         </tr>
@@ -52,9 +52,34 @@
     </table>
   </section>
 
+  <!-- Script -->
   <script src="config.js"></script>
   <script src="data-config.js"></script>
   <script src="connect.js"></script>
   <script src="data-integration.js"></script>
+
+  <script>
+    // Tambah barang ke tabel
+    document.getElementById("form-tambah-barang").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const kode = document.getElementById("kodeBarang").value;
+      const nama = document.getElementById("namaBarang").value;
+      const material = document.getElementById("jenisMaterial").value;
+      const jumlah = document.getElementById("jumlahBarang").value;
+      const harga = document.getElementById("hargaBarang").value;
+
+      const table = document.getElementById("tabel-barang");
+      const row = table.insertRow();
+
+      row.insertCell(0).textContent = kode;
+      row.insertCell(1).textContent = nama;
+      row.insertCell(2).textContent = material; // isi kolom Jenis Material
+      row.insertCell(3).textContent = jumlah;
+      row.insertCell(4).textContent = harga;
+
+      this.reset();
+    });
+  </script>
 </body>
 </html>
