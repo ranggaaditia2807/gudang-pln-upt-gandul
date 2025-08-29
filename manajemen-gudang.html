@@ -2,98 +2,77 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Manajemen Gudang</title>
-  <link rel="stylesheet" href="styles.css">
-
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firestore CRUD Example</title>
 </head>
 <body>
-  <h1>📦 Manajemen Gudang</h1>
+  <h2>Tambah User ke Firestore</h2>
+  <input type="text" id="name" placeholder="Nama"><br>
+  <input type="email" id="email" placeholder="Email"><br>
+  <button onclick="tambahUser()">Tambah</button>
 
-  <!-- Form Login -->
-  <div id="login-section">
-    <h2>Login Admin</h2>
-    <input type="email" id="email" placeholder="Email"><br>
-    <input type="password" id="password" placeholder="Password"><br>
-    <button onclick="login()">Login</button>
-  </div>
+  <h2>Daftar User</h2>
+  <ul id="userList"></ul>
 
-  <!-- Panel Admin (hanya muncul jika login) -->
-  <div id="admin-panel" style="display:none;">
-    <h2>Tambah Barang</h2>
-    <input type="text" id="nama" placeholder="Nama Barang">
-    <input type="number" id="stok" placeholder="Stok">
-    <button onclick="tambahBarang()">Tambah</button>
-    <button onclick="logout()">Logout</button>
-  </div>
+  <!-- Firebase SDK -->
+  <script type="module">
+    // Import Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    
+   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+  apiKey: "AIzaSyDhmWlG09XrFsPft61cnMsn-qp5YXeyVlA",
+  authDomain: "gudang-pln-upt-gandul.firebaseapp.com",
+  databaseURL: "https://gudang-pln-upt-gandul-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "gudang-pln-upt-gandul",
+  storageBucket: "gudang-pln-upt-gandul.firebasestorage.app",
+  messagingSenderId: "711245353879",
+  appId: "1:711245353879:web:91ae05ee8a8735e2a72ad2",
+  measurementId: "G-G6BRJ7FG5R"
 
-  <!-- Data Gudang (semua bisa lihat) -->
-  <h2>Data Barang</h2>
-  <ul id="data-list"></ul>
-
-  <!-- Firebase Config -->
-  <script>
-    const firebaseConfig = {
-      apiKey: "API_KEY",
-      authDomain: "PROJECT_ID.firebaseapp.com",
-      projectId: "PROJECT_ID",
-      storageBucket: "PROJECT_ID.appspot.com",
-      messagingSenderId: "SENDER_ID",
-      appId: "APP_ID"
     };
 
     // Init Firebase
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    const loginSection = document.getElementById("login-section");
-    const adminPanel = document.getElementById("admin-panel");
-    const list = document.getElementById("data-list");
-
-    // Login
-    function login() {
+    // Tambah user
+    async function tambahUser() {
+      const name = document.getElementById("name").value;
       const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-          loginSection.style.display = "none";
-          adminPanel.style.display = "block";
-        })
-        .catch(err => alert("Login gagal: " + err.message));
-    }
 
-    // Logout
-    function logout() {
-      auth.signOut().then(() => {
-        loginSection.style.display = "block";
-        adminPanel.style.display = "none";
-      });
-    }
-
-    // Tambah Barang (hanya admin)
-    function tambahBarang() {
-      const nama = document.getElementById("nama").value;
-      const stok = document.getElementById("stok").value;
-      if (nama && stok) {
-        db.collection("barang").add({ nama, stok: parseInt(stok) });
-        document.getElementById("nama").value = "";
-        document.getElementById("stok").value = "";
+      try {
+        await addDoc(collection(db, "users"), {
+          name: name,
+          email: email,
+          createdAt: new Date()
+        });
+        alert("User berhasil ditambahkan!");
+        muatUser();
+      } catch (e) {
+        alert("Error: " + e.message);
       }
     }
 
-    // Tampilkan data (semua user bisa lihat)
-    db.collection("barang").onSnapshot(snapshot => {
+    // Tampilkan user
+    async function muatUser() {
+      const list = document.getElementById("userList");
       list.innerHTML = "";
-      snapshot.forEach(doc => {
-        let li = document.createElement("li");
-        li.textContent = doc.data().nama + " - " + doc.data().stok;
+
+      const snapshot = await getDocs(collection(db, "users"));
+      snapshot.forEach((doc) => {
+        const li = document.createElement("li");
+        li.textContent = doc.data().name + " - " + doc.data().email;
         list.appendChild(li);
       });
-    });
+    }
+
+    // Load awal
+    muatUser();
+
+    // Biar tombol bisa dipakai
+    window.tambahUser = tambahUser;
   </script>
 </body>
 </html>
