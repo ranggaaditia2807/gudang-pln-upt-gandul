@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Manajemen Gudang PLN</title>
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
@@ -45,7 +45,7 @@
             padding: 5px 0;
             position: relative;
         }
-        .nav-links a:hover:after {
+        .nav-links a:hover::after {
             content: '';
             position: absolute;
             width: 100%;
@@ -248,7 +248,7 @@
 <body>
     <div class="header">
         <div class="logo">
-            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f68f332b-4d95-4a7b-afc9-09219dcdf0d3.png" alt="Logo PLN - Perusahaan Listrik Negara dengan ikon petir berwarna putih di atas background biru">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/f68f332b-4d95-4a7b-afc9-09219dcdf0d3.png" alt="Logo PLN - Perusahaan Listrik Negara dengan ikon petir berwarna putih di atas background biru" />
             Manajemen Gudang PLN
         </div>
         <div class="nav-links">
@@ -257,7 +257,7 @@
             <a href="transaksi.html">Transaksi</a>
             <a href="laporan.html">Laporan</a>
             <div class="user-info" id="user-info" style="display: none;">
-                <span class="user-role" id="user-role">User</span>
+                <span class="user-role" id="user-role">User </span>
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
         </div>
@@ -272,15 +272,15 @@
         <div id="main-content" style="display: none;">
             <div class="card">
                 <h2 class="card-title">Daftar Barang</h2>
-                
+
                 <div class="search-bar">
-                    <input type="text" id="search-barang" placeholder="Cari barang...">
+                    <input type="text" id="search-barang" placeholder="Cari barang..." />
                     <button class="btn btn-primary" onclick="searchBarang()">Cari</button>
                     <button class="btn btn-success" id="btn-tambah-barang" onclick="openModal('tambah')">Tambah Barang</button>
                 </div>
-                
+
                 <div id="message-container"></div>
-                
+
                 <table id="tabel-barang">
                     <thead>
                         <tr>
@@ -312,13 +312,13 @@
             <form id="form-login">
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" class="form-control" required placeholder="email@example.com">
+                    <input type="email" id="email" class="form-control" required placeholder="email@example.com" />
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" class="form-control" required placeholder="Masukkan password">
+                    <input type="password" id="password" class="form-control" required placeholder="Masukkan password" />
                 </div>
-                <div class="action-butons">
+                <div class="action-buttons">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('login')">Batal</button>
                     <button type="submit" class="btn btn-primary">Login</button>
                 </div>
@@ -336,15 +336,15 @@
             <form id="form-barang">
                 <div class="form-group">
                     <label for="kode-barang">Kode Barang</label>
-                    <input type="text" id="kode-barang" class="form-control" required>
+                    <input type="text" id="kode-barang" class="form-control" required />
                 </div>
                 <div class="form-group">
                     <label for="nama-barang">Nama Barang</label>
-                    <input type="text" id="nama-barang" class="form-control" required>
+                    <input type="text" id="nama-barang" class="form-control" required />
                 </div>
                 <div class="form-group">
                     <label for="stok-barang">Stok Awal</label>
-                    <input type="number" id="stok-barang" class="form-control" required min="0">
+                    <input type="number" id="stok-barang" class="form-control" required min="0" />
                 </div>
                 <div class="form-group">
                     <label for="satuan-barang">Satuan</label>
@@ -359,7 +359,7 @@
                 </div>
                 <div class="form-group">
                     <label for="lokasi-barang">Lokasi Penyimpanan</label>
-                    <input type="text" id="lokasi-barang" class="form-control" placeholder="Contoh: Rak A1">
+                    <input type="text" id="lokasi-barang" class="form-control" placeholder="Contoh: Rak A1" />
                 </div>
                 <div class="action-buttons">
                     <button type="button" class="btn btn-danger" onclick="closeModal('tambah')">Batal</button>
@@ -372,12 +372,12 @@
     <script>
         // Konfigurasi Firebase - GANTI DENGAN KONFIGURASI ANDA
         const firebaseConfig = {
-        apiKey: "AIzaSyDhmWlG09XrFsPft61cnMsn-qp5YXeyVlA",
-        authDomain: "gudang-pln-upt-gandul.firebaseapp.com",
-        projectId: "gudang-pln-upt-gandul",
-       storageBucket: "gudang-pln-upt-gandul.appspot.com",
-       messagingSenderId: "711245353879",
-       appId: "1:711245353879:web:91ae05ee8a8735e2a72ad2"
+            apiKey: "AIzaSyDhmWlG09XrFsPft61cnMsn-qp5YXeyVlA",
+            authDomain: "gudang-pln-upt-gandul.firebaseapp.com",
+            projectId: "gudang-pln-upt-gandul",
+            storageBucket: "gudang-pln-upt-gandul.appspot.com",
+            messagingSenderId: "711245353879",
+            appId: "1:711245353879:web:91ae05ee8a8735e2a72ad2"
         };
 
         // Inisialisasi Firebase
@@ -386,61 +386,21 @@
         const db = firebase.firestore();
 
         // State aplikasi
-        let currentUser = null;
+        let currentUser  = null;
         let userRole = 'user';
         let isEditing = false;
 
-        // Inisialisasi data dummy untuk development (jika perlu)
-        async function initializeDummyData() {
-            // Cek apakah collection users ada
-            const usersSnapshot = await db.collection('users').get();
-            if (usersSnapshot.empty) {
-                // Buat user admin dummy
-                await db.collection('users').doc('admin@pln.com').set({
-                    email: 'admin@pln.com',
-                    role: 'admin',
-                    createdAt: new Date()
-                });
-                
-                // Buat user biasa dummy
-                await db.collection('users').doc('user@pln.com').set({
-                    email: 'user@pln.com',
-                    role: 'user',
-                    createdAt: new Date()
-                });
-            }
-
-            // Cek apakah collection barang ada
-            const barangSnapshot = await db.collection('barang').get();
-            if (barangSnapshot.empty) {
-                // Buat data barang dummy
-                const dummyData = [
-                    { kode: 'BRG001', nama: 'Laptop Dell', stok: 10, satuan: 'unit', lokasi: 'Rak A1' },
-                    { kode: 'BRG002', nama: 'Mouse Wireless', stok: 25, satuan: 'pcs', lokasi: 'Rak B2' },
-                    { kode: 'BRG003', nama: 'Keyboard Mechanical', stok: 8, satuan: 'pcs', lokasi: 'Rak B3' }
-                ];
-
-                for (const item of dummyData) {
-                    await db.collection('barang').doc(item.kode).set(item);
-                }
-            }
-        }
-
-        // Fungsi untuk menampilkan pesan
+        // Fungsi menampilkan pesan
         function showMessage(message, type = 'info') {
             const container = document.getElementById('message-container');
-            container.innerHTML = `
-                <div class="${type}-message">
-                    ${message}
-                </div>
-            `;
+            container.innerHTML = `<div class="${type}-message">${message}</div>`;
             setTimeout(() => {
                 container.innerHTML = '';
             }, 5000);
         }
 
-        // Fungsi untuk mendapatkan role user dari Firestore
-        async function getUserRole(uid) {
+        // Mendapatkan role user dari Firestore
+        async function getUser Role(uid) {
             try {
                 const userDoc = await db.collection('users').doc(uid).get();
                 if (userDoc.exists) {
@@ -453,7 +413,7 @@
             }
         }
 
-        // Fungsi untuk setup UI berdasarkan role
+        // Setup UI berdasarkan role
         function setupUIByRole() {
             const tambahBtn = document.getElementById('btn-tambah-barang');
             if (userRole === 'admin') {
@@ -461,23 +421,19 @@
             } else {
                 tambahBtn.style.display = 'none';
             }
-
-            document.getElementById('user-role').textContent = userRole === 'admin' ? 'Administrator' : 'User';
+            document.getElementById('user-role').textContent = userRole === 'admin' ? 'Administrator' : 'User ';
         }
 
-        // Fungsi untuk render data barang
+        // Render data barang
         async function renderBarang() {
             const tbody = document.querySelector('#tabel-barang tbody');
             tbody.innerHTML = '<tr><td colspan="6" class="loading">Memuat data...</td></tr>';
-
             try {
                 const snapshot = await db.collection('barang').orderBy('nama').get();
-                
                 if (snapshot.empty) {
                     tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Tidak ada data barang</td></tr>';
                     return;
                 }
-
                 tbody.innerHTML = '';
                 snapshot.forEach(doc => {
                     const item = doc.data();
@@ -503,10 +459,9 @@
             }
         }
 
-        // Fungsi untuk membuka modal
+        // Buka modal
         function openModal(type) {
             document.getElementById(`modal-${type}`).style.display = 'flex';
-            
             if (type === 'tambah') {
                 isEditing = false;
                 document.getElementById('form-barang').reset();
@@ -515,18 +470,17 @@
             }
         }
 
-        // Fungsi untuk menutup modal
+        // Tutup modal
         function closeModal(type) {
             document.getElementById(`modal-${type}`).style.display = 'none';
         }
 
-        // Fungsi untuk edit barang
+        // Edit barang
         async function editBarang(kode) {
             if (userRole !== 'admin') {
                 showMessage('Anda tidak memiliki akses untuk mengedit data.', 'error');
                 return;
             }
-
             try {
                 const doc = await db.collection('barang').doc(kode).get();
                 if (doc.exists) {
@@ -537,179 +491,9 @@
                     document.getElementById('stok-barang').value = item.stok;
                     document.getElementById('satuan-barang').value = item.satuan;
                     document.getElementById('lokasi-barang').value = item.lokasi || '';
-                    
                     isEditing = true;
                     document.getElementById('modal-tambah-title').textContent = 'Edit Barang';
                     openModal('tambah');
                 }
             } catch (error) {
-                console.error('Error editing barang:', error);
-                showMessage('Gagal memuat data barang.', 'error');
-            }
-        }
-
-        // Fungsi untuk hapus barang
-        async function hapusBarang(kode) {
-            if (userRole !== 'admin') {
-                showMessage('Anda tidak memiliki akses untuk menghapus data.', 'error');
-                return;
-            }
-
-            if (confirm(`Apakah Anda yakin ingin menghapus barang ${kode}?`)) {
-                try {
-                    await db.collection('barang').doc(kode).delete();
-                    showMessage('Barang berhasil dihapus.', 'success');
-                    renderBarang();
-                } catch (error) {
-                    console.error('Error deleting barang:', error);
-                    showMessage('Gagal menghapus barang.', 'error');
-                }
-            }
-        }
-
-        // Fungsi untuk mencari barang
-        async function searchBarang() {
-            const searchTerm = document.getElementById('search-barang').value.toLowerCase();
-            const tbody = document.querySelector('#tabel-barang tbody');
-            tbody.innerHTML = '<tr><td colspan="6" class="loading">Mencari...</td></tr>';
-
-            try {
-                let query = db.collection('barang');
-                if (searchTerm) {
-                    query = query.where('nama', '>=', searchTerm).where('nama', '<=', searchTerm + '\uf8ff');
-                }
-                
-                const snapshot = await query.orderBy('nama').get();
-                
-                if (snapshot.empty) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">Tidak ada barang yang ditemukan</td></tr>';
-                    return;
-                }
-
-                tbody.innerHTML = '';
-                snapshot.forEach(doc => {
-                    const item = doc.data();
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${doc.id}</td>
-                        <td>${item.nama}</td>
-                        <td>${item.stok}</td>
-                        <td>${item.satuan}</td>
-                        <td>${item.lokasi || '-'}</td>
-                        <td>
-                            ${userRole === 'admin' ? `
-                                <button class="btn btn-primary" onclick="editBarang('${doc.id}')">Edit</button>
-                                <button class="btn btn-danger" onclick="hapusBarang('${doc.id}')">Hapus</button>
-                            ` : '-'}
-                        </td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            } catch (error) {
-                console.error('Error searching barang:', error);
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #dc3545; padding: 20px;">Error saat mencari</td></tr>';
-            }
-        }
-
-        // Event listener untuk form login
-        document.getElementById('form-login').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            try {
-                const userCredential = await auth.signInWithEmailAndPassword(email, password);
-                currentUser = userCredential.user;
-                userRole = await getUserRole(currentUser.uid);
-                
-                // Update UI
-                document.getElementById('login-prompt').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-                document.getElementById('user-info').style.display = 'flex';
-                
-                setupUIByRole();
-                renderBarang();
-                closeModal('login');
-                showMessage('Login berhasil!', 'success');
-                
-            } catch (error) {
-                console.error('Login error:', error);
-                showMessage('Login gagal: ' + error.message, 'error');
-            }
-        });
-
-        // Event listener untuk form barang
-        document.getElementById('form-barang').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            if (userRole !== 'admin') {
-                showMessage('Anda tidak memiliki akses untuk mengubah data.', 'error');
-                return;
-            }
-
-            const kode = document.getElementById('kode-barang').value;
-            const nama = document.getElementById('nama-barang').value;
-            const stok = parseInt(document.getElementById('stok-barang').value);
-            const satuan = document.getElementById('satuan-barang').value;
-            const lokasi = document.getElementById('lokasi-barang').value;
-
-            try {
-                await db.collection('barang').doc(kode).set({
-                    nama,
-                    stok,
-                    satuan,
-                    lokasi
-                }, { merge: true });
-
-                showMessage(isEditing ? 'Barang berhasil diperbarui!' : 'Barang berhasil ditambahkan!', 'success');
-                renderBarang();
-                closeModal('tambah');
-                
-            } catch (error) {
-                console.error('Error saving barang:', error);
-                showMessage('Gagal menyimpan barang: ' + error.message, 'error');
-            }
-        });
-
-        // Fungsi logout
-        function logout() {
-            auth.signOut().then(() => {
-                currentUser = null;
-                userRole = 'user';
-                
-                document.getElementById('login-prompt').style.display = 'block';
-                document.getElementById('main-content').style.display = 'none';
-                document.getElementById('user-info').style.display = 'none';
-                
-                showMessage('Anda telah logout.', 'info');
-            });
-        }
-
-        // Listen for auth state changes
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                currentUser = user;
-                userRole = await getUserRole(user.uid);
-                
-                document.getElementById('login-prompt').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-                document.getElementById('user-info').style.display = 'flex';
-                
-                setupUIByRole();
-                renderBarang();
-            } else {
-                document.getElementById('login-prompt').style.display = 'block';
-                document.getElementById('main-content').style.display = 'none';
-                document.getElementById('user-info').style.display = 'none';
-            }
-        });
-
-        // Initialize dummy data on first load
-        document.addEventListener('DOMContentLoaded', function() {
-            // initializeDummyData(); // Uncomment jika ingin membuat data dummy otomatis
-        });
-    </script>
-</body>
-</html>
-
+                console.error('Error editing barang:',
