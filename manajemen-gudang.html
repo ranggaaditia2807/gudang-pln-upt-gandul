@@ -2,312 +2,98 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Manajemen Gudang</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f6f9;
-    }
+  <link rel="stylesheet" href="styles.css">
 
-    /* Navbar */
-    nav {
-      background: #007bff;
-      padding: 12px 20px;
-      color: #fff;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    nav .logo {
-      font-weight: bold;
-      font-size: 18px;
-    }
-
-    nav ul {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      gap: 15px;
-    }
-
-    nav ul li {
-      display: inline;
-    }
-
-    nav ul li a {
-      color: #fff;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    nav ul li a:hover {
-      text-decoration: underline;
-    }
-
-    .container {
-      width: 90%;
-      margin: 30px auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #333;
-    }
-
-    .action-buttons {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 15px;
-    }
-
-    .btn {
-      padding: 8px 15px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .btn-primary { background: #007bff; color: #fff; }
-    .btn-success { background: #28a745; color: #fff; }
-    .btn-danger { background: #dc3545; color: #fff; }
-    .btn-warning { background: #ffc107; color: #000; }
-    .btn-sm { padding: 4px 8px; font-size: 12px; }
-
-    .search-box {
-      width: 250px;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    table th, table td {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: center;
-    }
-
-    table th {
-      background: #007bff;
-      color: white;
-    }
-
-    table tr:nth-child(even) { background: #f9f9f9; }
-    table tr:hover { background: #f1f1f1; }
-
-    /* Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0; top: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      overflow: auto;
-    }
-
-    .modal-content {
-      background: #fff;
-      margin: 8% auto;
-      padding: 20px;
-      border-radius: 10px;
-      width: 400px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      animation: fadeIn 0.3s;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #ddd;
-      margin-bottom: 15px;
-    }
-
-    .modal-title {
-      margin: 0;
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .close {
-      cursor: pointer;
-      font-size: 20px;
-      font-weight: bold;
-      color: #333;
-    }
-
-    .form-group {
-      margin-bottom: 12px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 14px;
-      color: #333;
-    }
-
-    .form-control {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-  </style>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
 </head>
 <body>
+  <h1>📦 Manajemen Gudang</h1>
 
-  <!-- NAVBAR -->
-  <nav>
-    <div class="logo">Gudang UPT Gandul</div>
-    <ul>
-      <li><a href="index.html">Dashboard</a></li>
-      <li><a href="manajemen.html">Manajemen Gudang</a></li>
-      <li><a href="laporan.html">Laporan</a></li>
-    </ul>
-  </nav>
-
-  <div class="container">
-    <h1>Manajemen Gudang</h1>
-    <div class="action-buttons">
-      <button class="btn btn-primary" onclick="openModal('modalTambahBarang')">+ Tambah Barang</button>
-      <input type="text" id="searchInput" class="search-box" placeholder="Cari barang...">
-    </div>
-
-    <table id="tabelBarang">
-      <thead>
-        <tr>
-          <th>Kode Barang</th>
-          <th>Nama Barang</th>
-          <th>Jenis Material</th>
-          <th>Stok Barang</th>
-          <th>Satuan</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Data barang akan ditambahkan di sini -->
-      </tbody>
-    </table>
+  <!-- Form Login -->
+  <div id="login-section">
+    <h2>Login Admin</h2>
+    <input type="email" id="email" placeholder="Email"><br>
+    <input type="password" id="password" placeholder="Password"><br>
+    <button onclick="login()">Login</button>
   </div>
 
-  <!-- Modal Tambah Barang -->
-  <div id="modalTambahBarang" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Tambah Barang</h2>
-        <span class="close" onclick="closeModal('modalTambahBarang')">&times;</span>
-      </div>
-      <form id="formTambahBarang">
-        <div class="form-group">
-          <label for="kodeBarang">Kode Barang</label>
-          <input type="text" id="kodeBarang" name="kodeBarang" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-          <label for="namaBarang">Nama Barang</label>
-          <input type="text" id="namaBarang" name="namaBarang" class="form-control" required>
-        </div>
-
-        <!-- Tambahan Jenis Material -->
-        <div class="form-group">
-          <label for="jenisMaterial">Jenis Material</label>
-          <input type="text" id="jenisMaterial" name="jenisMaterial" class="form-control" required>
-        </div>
-
-        <div class="form-group">
-          <label for="stokBarang">Stok Barang</label>
-          <input type="number" id="stokBarang" name="stokBarang" class="form-control" required>
-        </div>
-
-        <!-- Tambahan Satuan -->
-        <div class="form-group">
-          <label for="satuan">Satuan</label>
-          <select id="satuan" name="satuan" class="form-control" required>
-            <option value="">-- Pilih Satuan --</option>
-            <option value="Unit">Unit</option>
-            <option value="PCS">PCS</option>
-            <option value="Buah">Buah</option>
-            <option value="Box">Box</option>
-          </select>
-        </div>
-
-        <div class="action-buttons">
-          <button type="button" class="btn btn-danger" onclick="closeModal('modalTambahBarang')">Batal</button>
-          <button type="submit" class="btn btn-success">Simpan</button>
-        </div>
-      </form>
-    </div>
+  <!-- Panel Admin (hanya muncul jika login) -->
+  <div id="admin-panel" style="display:none;">
+    <h2>Tambah Barang</h2>
+    <input type="text" id="nama" placeholder="Nama Barang">
+    <input type="number" id="stok" placeholder="Stok">
+    <button onclick="tambahBarang()">Tambah</button>
+    <button onclick="logout()">Logout</button>
   </div>
 
+  <!-- Data Gudang (semua bisa lihat) -->
+  <h2>Data Barang</h2>
+  <ul id="data-list"></ul>
+
+  <!-- Firebase Config -->
   <script>
-    const form = document.getElementById("formTambahBarang");
-    const tabelBarang = document.querySelector("#tabelBarang tbody");
+    const firebaseConfig = {
+      apiKey: "API_KEY",
+      authDomain: "PROJECT_ID.firebaseapp.com",
+      projectId: "PROJECT_ID",
+      storageBucket: "PROJECT_ID.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
+    };
 
-    // Tambah Barang ke tabel
-    form.addEventListener("submit", function(event) {
-      event.preventDefault();
+    // Init Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const auth = firebase.auth();
 
-      const kodeBarang = document.getElementById("kodeBarang").value;
-      const namaBarang = document.getElementById("namaBarang").value;
-      const jenisMaterial = document.getElementById("jenisMaterial").value;
-      const stokBarang = document.getElementById("stokBarang").value;
-      const satuan = document.getElementById("satuan").value;
+    const loginSection = document.getElementById("login-section");
+    const adminPanel = document.getElementById("admin-panel");
+    const list = document.getElementById("data-list");
 
-      const row = tabelBarang.insertRow();
-      row.insertCell(0).textContent = kodeBarang;
-      row.insertCell(1).textContent = namaBarang;
-      row.insertCell(2).textContent = jenisMaterial;
-      row.insertCell(3).textContent = stokBarang;
-      row.insertCell(4).textContent = satuan;
-      row.insertCell(5).innerHTML = `
-        <button class="btn btn-warning btn-sm">Edit</button>
-        <button class="btn btn-danger btn-sm">Hapus</button>
-      `;
+    // Login
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          loginSection.style.display = "none";
+          adminPanel.style.display = "block";
+        })
+        .catch(err => alert("Login gagal: " + err.message));
+    }
 
-      form.reset();
-      closeModal('modalTambahBarang');
-    });
+    // Logout
+    function logout() {
+      auth.signOut().then(() => {
+        loginSection.style.display = "block";
+        adminPanel.style.display = "none";
+      });
+    }
 
-    // Search Barang
-    document.getElementById("searchInput").addEventListener("keyup", function() {
-      let filter = this.value.toLowerCase();
-      let rows = document.querySelectorAll("#tabelBarang tbody tr");
+    // Tambah Barang (hanya admin)
+    function tambahBarang() {
+      const nama = document.getElementById("nama").value;
+      const stok = document.getElementById("stok").value;
+      if (nama && stok) {
+        db.collection("barang").add({ nama, stok: parseInt(stok) });
+        document.getElementById("nama").value = "";
+        document.getElementById("stok").value = "";
+      }
+    }
 
-      rows.forEach(row => {
-        let text = row.textContent.toLowerCase();
-        row.style.display = text.includes(filter) ? "" : "none";
+    // Tampilkan data (semua user bisa lihat)
+    db.collection("barang").onSnapshot(snapshot => {
+      list.innerHTML = "";
+      snapshot.forEach(doc => {
+        let li = document.createElement("li");
+        li.textContent = doc.data().nama + " - " + doc.data().stok;
+        list.appendChild(li);
       });
     });
-
-    // Modal functions
-    function openModal(id) {
-      document.getElementById(id).style.display = "block";
-    }
-    function closeModal(id) {
-      document.getElementById(id).style.display = "none";
-    }
   </script>
 </body>
 </html>
