@@ -1,97 +1,178 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>Struktur Organisasi</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Struktur Organisasi PLN</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f8f9fa;
-            text-align: center;
+            color: #333;
+            line-height: 1.6;
         }
         /* Header & Navbar */
         .header {
-            background-color: #005baa;
+            background: linear-gradient(135deg, #005baa 0%, #003d73 100%);
             color: white;
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
         .logo {
-            font-size: 24px;
-            font-weight: bold;
             display: flex;
             align-items: center;
+            gap: 15px;
         }
         .logo img {
-            height: 40px;
-            margin-right: 10px;
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background: white;
+            padding: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .logo-text {
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         .nav-links {
             display: flex;
-            gap: 25px;
+            gap: 30px;
         }
         .nav-links a {
             color: white;
             text-decoration: none;
             font-weight: 500;
-            padding: 5px 0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
             position: relative;
         }
-        .nav-links a:hover:after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: white;
-            bottom: 0;
-            left: 0;
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
         }
-
-        /* Struktur Organisasi */
-        .container {
+        /* Main Content */
+        .main-content {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .page-title {
+            text-align: center;
+            color: #005baa;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        /* Organizational Structure */
+        .org-chart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 60px;
+        }
+        .level {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            position: relative;
+        }
+        .manager-level {
+            margin-bottom: 80px;
+        }
+        .team-level {
             display: flex;
             justify-content: center;
-            flex-wrap: wrap;
-        }
-        .box {
-            border: 2px solid #007bff;
-            border-radius: 8px;
-            padding: 10px;
-            margin: 10px;
-            background-color: white;
-            width: 200px;
+            gap: 40px;
             position: relative;
+            width: 100%;
+            max-width: 900px;
         }
-        .line {
+        /* Connection Lines */
+        .vertical-connector {
+            width: 3px;
+            background: linear-gradient(to bottom, #007bff, #0056b3);
+            margin: 10px 0;
+            position: relative;
+            z-index: 1;
+        }
+        .vertical-connector.long {
+            height: 60px;
+        }
+        .vertical-connector.short {
+            height: 30px;
+        }
+        .horizontal-connectors {
             position: absolute;
-            background-color: #000;
-            width: 2px;
+            top: -30px;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: linear-gradient(to right, #007bff, #0056b3);
+            margin: 0 auto;
+            z-index: 0;
+            border-radius: 2px;
         }
-        .vertical-line {
-            height: 50px;
-            left: 50%;
-            top: 100%;
-            margin-left: -1px;
+        /* Employee Cards */
+        .employee-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            width: 280px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s ease;
+            border: 2px solid #e9ecef;
+            position: relative;
+            z-index: 2;
         }
-        .horizontal-line {
-            width: 50px;
-            top: 50%;
-            left: 100%;
-            margin-top: -1px;
+        .employee-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
+            border-color: #007bff;
         }
-        .title {
-            background-color: #007bff;
+        .manager-card {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
             color: white;
-            font-weight: bold;
+            border: none;
         }
-        h1 {
-            margin: 30px 0 20px;
-            color: #005baa;
+        .team-leader-card {
+            background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+            color: white;
+            border: none;
+        }
+        .employee-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            border: 4px solid #f8f9fa;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+        .employee-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .employee-card:hover .employee-image img {
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -99,59 +180,74 @@
     <!-- Header -->
     <div class="header">
         <div class="logo">
-            <img src="https://via.placeholder.com/40" alt="Logo PLN">
-            Struktur Organisasi PLN
+            <img src="https://via.placeholder.com/50" alt="Logo PLN" />
+            <div class="logo-text">Struktur Organisasi PLN</div>
         </div>
         <div class="nav-links">
-            <a href="index.html">Home</a>
+            <a href="index.html" class="active">Home</a>
             <a href="manajemen-gudang.html">Manajemen Gudang</a>
             <a href="transaksi.html">Transaksi</a>
             <a href="laporan.html">Laporan</a>
         </div>
     </div>
 
-    <!-- Konten Struktur Organisasi -->
-    <h1>Struktur Organisasi</h1>
-    <div class="container">
-        <div class="box title">ASMAN KONSTRUKSI<br>KERY DERMAWAN</div>
-        <li><img src="KERY DERMAWAN.png" alt="" ></li>
-        <div class="line vertical-line"></div>
-    </div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1 class="page-title">Struktur Organisasi</h1>
 
-   <div class="container">
-        <div class="box title">TEAM LEADER LOGISTIK<br>MUHAMMAD DIAS</div>
-        <li><img src="DIAS.png" alt="" ></li>
-        <div class="line vertical-line"></div>
-    </div>
-    <div class="container">
-        <div class="box">ADMINISTRASI/HELPER<br>JAKA ADHI PRIMANTARA</div>
-        <ul><img src="JAKA.png" alt="" ></ul>
-        <div class="line vertical-line"></div>
-    </div>
-        <div>
-        <div class="box">ADMINISTRASI/HELPER<br>BRILIAN AHMAD FATHONI</div>
-        <ul><img src="BRILIAN AHMAD FATHONI.png" alt="" ></ul>
-        <div class="line vertical-line"></div>
-    </div>
-       <div>  
-        <div class="box">CLEANING SERVICE/HELPER<br>AGENG DARMAWAN</div>
-        <ul><img src="AGENG DARMAWAN.png" alt="" ></ul>
-        <div class="line vertical-line"></div>
+        <div class="org-chart">
+            <!-- Pak Kery (Top Manager) -->
+            <div class="level manager-level">
+                <div class="employee-card manager-card">
+                    <div class="employee-image">
+                        <img src="KERY DERMAWAN.png" alt="Foto Kery Dermawan" />
+                    </div>
+                    <div><strong>ASMAN KONSTRUKSI</strong></div>
+                    <div>KERY DERMAWAN</div>
+                </div>
+                <div class="vertical-connector long"></div>
+            </div>
+
+            <!-- Pak Dias (Team Leader) -->
+            <div class="level">
+                <div class="employee-card team-leader-card">
+                    <div class="employee-image">
+                        <img src="DIAS.png" alt="Foto Muhammad Dias" />
+                    </div>
+                    <div><strong>TEAM LEADER LOGISTIK</strong></div>
+                    <div>MUHAMMAD DIAS</div>
+                </div>
+                <!-- Garis vertikal dari Pak Dias ke garis horizontal -->
+                <div class="vertical-connector short"></div>
+                <!-- Garis horizontal menghubungkan ketiga anggota -->
+                <div class="horizontal-connectors"></div>
+            </div>
+
+            <!-- Brilian (kiri), Jaka (tengah), Ageng (kanan) -->
+            <div class="level team-level">
+                <div class="employee-card">
+                    <div class="employee-image">
+                        <img src="BRILIAN AHMAD FATHONI.png" alt="Foto Brilian Ahmad Fathoni" />
+                    </div>
+                    <div><strong>ADMINISTRASI/HELPER</strong></div>
+                    <div>BRILIAN AHMAD FATHONI</div>
+                </div>
+                <div class="employee-card">
+                    <div class="employee-image">
+                        <img src="JAKA.png" alt="Foto Jaka Adhi Primantara" />
+                    </div>
+                    <div><strong>ADMINISTRASI/HELPER</strong></div>
+                    <div>JAKA ADHI PRIMANTARA</div>
+                </div>
+                <div class="employee-card">
+                    <div class="employee-image">
+                        <img src="AGENG DARMAWAN.png" alt="Foto Ageng Darmawan" />
+                    </div>
+                    <div><strong>CLEANING SERVICE/HELPER</strong></div>
+                    <div>AGENG DARMAWAN</div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
